@@ -1,6 +1,7 @@
 #include "AttractiveEndsCapsuleForce.hpp"
 #include "TypeSixSecretionEnumerations.hpp"
 #include "NodeBasedCellPopulation.hpp"
+#include "CapsuleForce.hpp"
 
 #ifdef CHASTE_VTK
 #include <vtkLine.h>
@@ -32,7 +33,7 @@ double AttractiveEndsCapsuleForce<ELEMENT_DIM, SPACE_DIM>::GetYoungModulus()
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 AttractiveEndsCapsuleForce<ELEMENT_DIM, SPACE_DIM>::AttractiveEndsCapsuleForce()
-        : AbstractForce<ELEMENT_DIM, SPACE_DIM>(),
+        : CapsuleForce<ELEMENT_DIM, SPACE_DIM>(),
           mYoungModulus(100.0)
 {
     // Has to be either element and space dimensions are both 2 or both 3.
@@ -451,7 +452,7 @@ template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void AttractiveEndsCapsuleForce<ELEMENT_DIM,SPACE_DIM>::OutputForceParameters(out_stream& rParamsFile)
 {
     // Call method on direct parent class
-    AbstractForce<ELEMENT_DIM,SPACE_DIM>::OutputForceParameters(rParamsFile);
+    CapsuleForce<ELEMENT_DIM,SPACE_DIM>::OutputForceParameters(rParamsFile);
 }
 
 // Explicit instantiation

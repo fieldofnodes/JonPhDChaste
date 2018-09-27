@@ -1,7 +1,7 @@
 #ifndef ATTRACTIVEENDSCAPSULEFORCE_HPP_
 #define ATTRACTIVEENDSCAPSULEFORCE_HPP_
 
-#include "AbstractForce.hpp"
+#include "CapsuleForce.hpp"
 
 #include "ChasteSerialization.hpp"
 #include <boost/serialization/base_object.hpp>
@@ -11,7 +11,7 @@
  * J R Soc Interface. 2017 Jun;14(131). pii: 20170073. doi: 10.1098/rsif.2017.0073
  */
 template<unsigned  ELEMENT_DIM, unsigned SPACE_DIM=ELEMENT_DIM>
-class AttractiveEndsCapsuleForce : public AbstractForce<ELEMENT_DIM, SPACE_DIM>
+class AttractiveEndsCapsuleForce : public CapsuleForce<ELEMENT_DIM, SPACE_DIM>
 {
     //friend class TestCapsuleForce
 	friend class TestAttractiveEndsCapsuleForce;
@@ -34,7 +34,7 @@ private:
     template<class Archive>
     void serialize(Archive & archive, const unsigned int version)
     {
-        archive & boost::serialization::base_object<AbstractForce<ELEMENT_DIM, SPACE_DIM> >(*this);
+        archive & boost::serialization::base_object<CapsuleForce<ELEMENT_DIM, SPACE_DIM> >(*this);
         archive & mYoungModulus;
     }
 
