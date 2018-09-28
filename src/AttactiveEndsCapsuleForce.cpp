@@ -1,6 +1,8 @@
 #include "AttractiveEndsCapsuleForce.hpp"
 #include "TypeSixSecretionEnumerations.hpp"
 #include "NodeBasedCellPopulation.hpp"
+#include "CapsuleForce.hpp"
+#include "CapsuleForce.cpp"
 
 #ifdef CHASTE_VTK
 #include <vtkLine.h>
@@ -32,7 +34,7 @@ double AttractiveEndsCapsuleForce<ELEMENT_DIM, SPACE_DIM>::GetYoungModulus()
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 AttractiveEndsCapsuleForce<ELEMENT_DIM, SPACE_DIM>::AttractiveEndsCapsuleForce()
-        : AbstractForce<ELEMENT_DIM, SPACE_DIM>(),
+        : CapsuleForce<ELEMENT_DIM, SPACE_DIM>(),
           mYoungModulus(100.0)
 {
     // Has to be either element and space dimensions are both 2 or both 3.
@@ -283,7 +285,7 @@ double AttractiveEndsCapsuleForce<ELEMENT_DIM, SPACE_DIM>::CalculateForceDirecti
 	//The vecotr rVectAToB is important as it will indicate what capsules to touch each other
 	// vector between the two closest points
 
-
+	//These are crucial as they help calculate the torque vectors
 	rContactDistA = -(sc-0.5)*length_a;
 	rContactDistB = -(tc-0.5)*length_b;
 	double shortest_distance = norm_2(rVecAToB);   // return the closest distance
@@ -314,12 +316,12 @@ double AttractiveEndsCapsuleForce<ELEMENT_DIM,SPACE_DIM>::CalculateForceMagnitud
                                                                     const double radiusB)
 {
     const double effective_radius = 2.0 * radiusA * radiusB / (radiusA + radiusB);
-    const double force = -2.0 * mYoungModulus * pow(overlap, 1.5) * sqrt(effective_radius) / 3.0;
+    const double force = -2.0 * mYoungModulus * pow(fabs(overlap), 1.5) * sqrt(effective_radius) / 3.0;
 
 
 
     // Horrific hack to stop explosions after division and before appropriate length is set!
-    if (overlap > radiusA) // Changed this to 0.0 as opposed to radiusA - as the attractive ends force needs to work when the objects are not touching eachother?
+    if (overlap > radiusA && overlap < -2.0*radiusA) // Changed this to 0.0 as opposed to radiusA - as the attractive ends force needs to work when the objects are not touching eachother?
     {
     	return 0.0;
     }
@@ -365,7 +367,7 @@ void AttractiveEndsCapsuleForce<ELEMENT_DIM,SPACE_DIM>::AddForceContribution(Abs
 																 contact_dist_a,
 																 contact_dist_b);
 
-		if (overlap > 0.0)
+		if (overlap > -1.0)
 		{
 
             const double radius_a = r_node_a.rGetNodeAttributes()[NA_RADIUS];
@@ -451,7 +453,7 @@ template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void AttractiveEndsCapsuleForce<ELEMENT_DIM,SPACE_DIM>::OutputForceParameters(out_stream& rParamsFile)
 {
     // Call method on direct parent class
-    AbstractForce<ELEMENT_DIM,SPACE_DIM>::OutputForceParameters(rParamsFile);
+    CapsuleForce<ELEMENT_DIM,SPACE_DIM>::OutputForceParameters(rParamsFile);
 }
 
 // Explicit instantiation

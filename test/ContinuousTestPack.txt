@@ -1,1 +1,3 @@
-TestHello.hpp
+TestAttractiveEndsCapsuleForce.hpp
+TestCapsuleSimulation2dAttractiveEnds.hpp
+TestCapsuleSimulation3dAttractiveEnds.hpp

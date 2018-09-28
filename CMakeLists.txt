@@ -43,7 +43,11 @@
 # Note that the order in which components are specified does not matter.
 
 # Here we just depend on core components (nothing application-specific).
-find_package(Chaste COMPONENTS continuum_mechanics global io linalg mesh ode pde)
+find_package(Chaste COMPONENTS cell_based crypt)
+
+# Here we just depend on core components (nothing application-specific).
+find_package(Chaste COMPONENTS cell_based project_DundeeTypeSixSecretion)
+
 
 # Alternatively, to specify a Chaste installation directory use a line like that below.
 # This is needed if your project is not contained in the projects folder within a Chaste source tree.
@@ -51,4 +55,4 @@ find_package(Chaste COMPONENTS continuum_mechanics global io linalg mesh ode pde
 
 # Change the project name in the line below to match the folder this file is in,
 # i.e. the name of your project.
-chaste_do_project(template_project)
+chaste_do_project(JonPhDChaste)
