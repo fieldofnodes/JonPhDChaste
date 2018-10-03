@@ -1,3 +1,4 @@
 TestAttractiveEndsCapsuleForce.hpp
 TestCapsuleSimulation2dAttractiveEnds.hpp
 TestCapsuleSimulation3dAttractiveEnds.hpp
+TestCapsuleAttractiveEndsForce2dDivision.hpp

@@ -316,12 +316,14 @@ double AttractiveEndsCapsuleForce<ELEMENT_DIM,SPACE_DIM>::CalculateForceMagnitud
                                                                     const double radiusB)
 {
     const double effective_radius = 2.0 * radiusA * radiusB / (radiusA + radiusB);
-    const double force = -2.0 * mYoungModulus * pow(fabs(overlap), 1.5) * sqrt(effective_radius) / 3.0;
+    //Elastic force must be dominant
+    const double force = -2.0 * mYoungModulus * pow(fabs(overlap), 1.5) * sqrt(effective_radius);
+    double deltastar = -0.25*radiusA;
 
 
 
     // Horrific hack to stop explosions after division and before appropriate length is set!
-    if (overlap > radiusA && overlap < -2.0*radiusA) // Changed this to 0.0 as opposed to radiusA - as the attractive ends force needs to work when the objects are not touching eachother?
+    if (overlap < deltastar || overlap > 0.0 )//radiusA || (overlap > -0.1 && overlap < -2.0*radiusA) ) // Changed this to 0.0 as opposed to radiusA - as the attractive ends force needs to work when the objects are not touching eachother?
     {
     	return 0.0;
     }
