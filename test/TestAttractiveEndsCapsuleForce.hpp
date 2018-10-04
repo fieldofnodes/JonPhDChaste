@@ -714,16 +714,16 @@ public:
                 double radiusA = 4.0;
                 double radiusB = 4.0;
 
-                TS_ASSERT_DELTA(force.CalculateForceMagnitude(overlap, radiusA, radiusB), -800.0 / 3.0, 1e-6);
+                TS_ASSERT_DELTA(force.CalculateForceMagnitude(overlap, radiusA, radiusB), 0.0, 1e-6);
             }
 
             // Hand calculate a nontrivial case
             {
-                double overlap = 1.23;
+                double overlap = -0.10;
                 double radiusA = 2.34;
                 double radiusB = 3.45;
 
-                TS_ASSERT_DELTA(force.CalculateForceMagnitude(overlap, radiusA, radiusB), -303.731332875, 1e-6);
+                TS_ASSERT_DELTA(force.CalculateForceMagnitude(overlap, radiusA, radiusB), -10.5614412582, 1e-6);
             }
         }
         void TestAddForceContribution()

@@ -133,7 +133,6 @@ public:
 
 
 		auto p_atractive_ends_capsule_force = boost::make_shared<AttractiveEndsCapsuleForce<2>>();
-		p_atractive_ends_capsule_force->SetYoungModulus(300.0);
 		simulator.AddForce(p_atractive_ends_capsule_force);
 
 

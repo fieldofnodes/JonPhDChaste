@@ -1,6 +1,6 @@
 
-#ifndef TESTCAPSULESIMULATION3D_HPP_
-#define TESTCAPSULESIMULATION3D_HPP_
+#ifndef TESTCAPSULESIMULATION3DATTRACTIVEENDS_HPP_
+#define TESTCAPSULESIMULATION3DATTRACTIVEENDS_HPP_
 
 #include <cxxtest/TestSuite.h>
 #include <cycle/UniformCellCycleModel.hpp>
@@ -46,7 +46,7 @@
 
 #include "Debug.hpp"
 
-class TestCapsuleSimulation3d : public AbstractCellBasedTestSuite
+class TestCapsuleSimulation3dAttractiveEnds : public AbstractCellBasedTestSuite
 {
 public:
 
@@ -385,15 +385,15 @@ public:
 								 PRINT_VARIABLE(node_index);
 
 								 TS_ASSERT_DELTA(machine_coords[0],0.0,1e-6);
-								 TS_ASSERT_DELTA(machine_coords[1],0.5,1e-6);
-								 TS_ASSERT_DELTA(machine_coords[2],0.0,1e-6);
+								 TS_ASSERT_DELTA(machine_coords[1],0.0,1e-6);
+								 TS_ASSERT_DELTA(machine_coords[2],0.5,1e-6);
 							 }
 							 else if (node_index==1u)
 							 {
 								 PRINT_VARIABLE(node_index);
 
-								 TS_ASSERT_DELTA(machine_coords[0],3.0+0.0,1e-6);
-								 TS_ASSERT_DELTA(machine_coords[1],3.0+0.5,1e-6);
+								 TS_ASSERT_DELTA(machine_coords[0],3.0+0.5,1e-6);
+								 TS_ASSERT_DELTA(machine_coords[1],3.0+0.0,1e-6);
 								 TS_ASSERT_DELTA(machine_coords[2],3.0+0.0,1e-6);
 							 }
 						 }
@@ -494,7 +494,7 @@ public:
 		OffLatticeSimulation<3> simulator(population);
 		simulator.SetOutputDirectory("TestSmallSymmetric3dCapsuleSimulationWithMachinePropertiesAndDivision");
 		simulator.SetDt(1.0/1200.0);
-		simulator.SetSamplingTimestepMultiple(100u);
+		simulator.SetSamplingTimestepMultiple(30u);
 
 		auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<3,3>>();
 		simulator.SetNumericalMethod(p_numerical_method);
@@ -507,15 +507,11 @@ public:
 		auto p_capsule_force = boost::make_shared<CapsuleForce<3>>();
 		simulator.AddForce(p_capsule_force);
 
-		auto p_atractive_ends_capsule_force = boost::make_shared<AttractiveEndsCapsuleForce<3>>();
-		simulator.AddForce(p_atractive_ends_capsule_force);
-
-
 		/* We then set an end time and run the simulation */
-		simulator.SetEndTime(0.7);
+		simulator.SetEndTime(2.0);
 		simulator.Solve();
 
-		TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetNumRealCells(),2u);
+		TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetNumRealCells(),4u);
 	}
 
 	void TestSmallSymmetric3dCapsuleSimulationWithMachinePropertiesAndDivisionAndModifier() //throw (Exception)
@@ -636,10 +632,10 @@ public:
 
 		unsigned num_machines=p_modifier->GetTotalNumberOfMachines(simulator.rGetCellPopulation());
 
-		TS_ASSERT_EQUALS(num_machines,2u);
+		TS_ASSERT_EQUALS(num_machines,4u);
 
 		/* We then set an end time and run the simulation */
-		simulator.SetEndTime(5.0); // was 1.0075
+		simulator.SetEndTime(2.0); // was 1.0075
 		simulator.SetSamplingTimestepMultiple(20);
 
 		simulator.Solve();
@@ -653,7 +649,7 @@ public:
 		/* We then set an end time and run the simulation */
 
 
-		TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetNumRealCells(),2u);
+		TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetNumRealCells(),11u);
 	}
 
     void TestMachinesWithModifiersAndDivision3d()
@@ -873,7 +869,7 @@ public:
            simulator.Solve();
            unsigned num_machines3=p_modifier->GetTotalNumberOfMachines(simulator.rGetCellPopulation());
            TS_ASSERT_EQUALS(num_machines3,1u);
-           TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetNumRealCells(),2u);
+           TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetNumRealCells(),8u);
        }
 
     void TestMachinesWithModifiersAndDivisionVisManyMachines3d()
@@ -974,9 +970,8 @@ public:
               simulator.AddSimulationModifier(p_modifier);
 
           	unsigned num_machines=p_modifier->GetTotalNumberOfMachines(simulator.rGetCellPopulation());
-
-          	TS_ASSERT_EQUALS(num_machines,1u);
-              TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetNumRealCells(),1u);
+          		TS_ASSERT_EQUALS(num_machines,1u);
+          		TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetNumRealCells(),1u);
 
 
 
@@ -984,7 +979,7 @@ public:
               simulator.Solve();
               unsigned num_machines3=p_modifier->GetTotalNumberOfMachines(simulator.rGetCellPopulation());
               TS_ASSERT_EQUALS(num_machines3,1u);
-              TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetNumRealCells(),2u);
+              TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetNumRealCells(),4u);
           }
 
     void TestMachineModifierWithDivision3dManyVisKiller()
@@ -1005,7 +1000,7 @@ public:
               mesh.GetNode(0u)->AddNodeAttribute(0.0);
               mesh.GetNode(0u)->rGetNodeAttributes().resize(NA_VEC_LENGTH);
               mesh.GetNode(0u)->rGetNodeAttributes()[NA_THETA] = 0.25 * M_PI;
-      		mesh.GetNode(0u)->rGetNodeAttributes()[NA_PHI] = 0.5 * M_PI;
+              mesh.GetNode(0u)->rGetNodeAttributes()[NA_PHI] = 0.5 * M_PI;
 
               mesh.GetNode(0u)->rGetNodeAttributes()[NA_LENGTH] = 2.0;
               mesh.GetNode(0u)->rGetNodeAttributes()[NA_RADIUS] = 0.5;
@@ -1091,20 +1086,20 @@ public:
 
           	unsigned num_machines=p_modifier->GetTotalNumberOfMachines(simulator.rGetCellPopulation());
 
-          	TS_ASSERT_EQUALS(num_machines,1u);
-              TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetNumRealCells(),1u);
+          		TS_ASSERT_EQUALS(num_machines,1u);
+          		TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetNumRealCells(),1u);
 
 
 
               simulator.SetEndTime(10.5);
               simulator.Solve();
               unsigned num_machines3=p_modifier->GetTotalNumberOfMachines(simulator.rGetCellPopulation());
-              TS_ASSERT_EQUALS(num_machines3,1u);
-              TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetNumRealCells(),2u);
+              TS_ASSERT_EQUALS(num_machines3,118u);
+              TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetNumRealCells(),241u);
           }
 
 
 
 };
 
-#endif /*TESTCAPSULESIMULATION3D_HPP_*/
+#endif /*TESTCAPSULESIMULATION3DATTRACTIVEENDS_HPP_*/
