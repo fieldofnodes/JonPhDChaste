@@ -99,7 +99,7 @@ public:
 		CellPtr p_cell0 = cell_population.GetCellUsingLocationIndex(0);
         c_vector<double, 2> expected_parent_location;
         c_vector<double, 2> axis_vector;
-        const double distance = (mesh.GetNode(0u)->rGetNodeAttributes()[NA_LENGTH]) + 2.0*(mesh.GetNode(0u)->rGetNodeAttributes()[NA_RADIUS]);
+        const double distance = 0.5*(mesh.GetNode(0u)->rGetNodeAttributes()[NA_LENGTH]) + 2.0*(mesh.GetNode(0u)->rGetNodeAttributes()[NA_RADIUS]);
         axis_vector(0) = distance*cos(mesh.GetNode(0u)->rGetNodeAttributes()[NA_THETA]);
         axis_vector(1) = distance*sin(mesh.GetNode(0u)->rGetNodeAttributes()[NA_THETA]);
         expected_parent_location = cell_population.GetLocationOfCellCentre(p_cell0) - axis_vector;

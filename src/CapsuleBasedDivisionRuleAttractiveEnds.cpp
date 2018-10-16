@@ -37,7 +37,7 @@ std::pair<c_vector<double, SPACE_DIM>, c_vector<double, SPACE_DIM> > CapsuleBase
    	        const double length_capsule = p_node->rGetNodeAttributes()[NA_LENGTH];
    	        const double radius_capsule = p_node->rGetNodeAttributes()[NA_RADIUS];
 
-        	const double distance=length_capsule+2.0*radius_capsule;
+        	const double distance=0.5*(length_capsule+2.0*radius_capsule);
             axis_vector(0) = distance*cos(orientation_theta);
             axis_vector(1) = distance*sin(orientation_theta);
             break;
@@ -51,7 +51,7 @@ std::pair<c_vector<double, SPACE_DIM>, c_vector<double, SPACE_DIM> > CapsuleBase
    	        const double length_capsule = p_node->rGetNodeAttributes()[NA_LENGTH];
    	        const double radius_capsule = p_node->rGetNodeAttributes()[NA_RADIUS];
 
-        	const double distance=length_capsule+2.0*radius_capsule;
+        	const double distance=0.5*(length_capsule+2.0*radius_capsule);
             axis_vector(0) = distance*cos(orientation_theta)*sin(orientation_phi);
             axis_vector(1) = distance*sin(orientation_theta)*sin(orientation_phi);
             axis_vector(2) = distance*cos(orientation_phi);
