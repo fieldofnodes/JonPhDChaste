@@ -99,7 +99,7 @@ public:
 		CellPtr p_cell0 = cell_population.GetCellUsingLocationIndex(0);
         c_vector<double, 2> expected_parent_location;
         c_vector<double, 2> axis_vector;
-        const double distance = 0.5*(mesh.GetNode(0u)->rGetNodeAttributes()[NA_LENGTH]) + 2.0*(mesh.GetNode(0u)->rGetNodeAttributes()[NA_RADIUS]);
+        const double distance = 0.5*((mesh.GetNode(0u)->rGetNodeAttributes()[NA_LENGTH]) + 2.0*(mesh.GetNode(0u)->rGetNodeAttributes()[NA_RADIUS]));
         axis_vector(0) = distance*cos(mesh.GetNode(0u)->rGetNodeAttributes()[NA_THETA]);
         axis_vector(1) = distance*sin(mesh.GetNode(0u)->rGetNodeAttributes()[NA_THETA]);
         expected_parent_location = cell_population.GetLocationOfCellCentre(p_cell0) - axis_vector;
@@ -117,8 +117,6 @@ public:
 
 
 
-        TS_ASSERT_DELTA(p_division_rule_to_set->rGetDaughterLocation()[0], expected_daughter_location[0], 1e-6);
-        TS_ASSERT_DELTA(p_division_rule_to_set->rGetDaughterLocation()[1], expected_daughter_location[1], 1e-6);
 
         cell_population.SetCentreBasedDivisionRule(p_division_rule_to_set);
 
@@ -130,17 +128,20 @@ public:
 
         c_vector<double, 2> parent_location;
         parent_location = positions.first;
-
+        c_vector<double, 2> daughter_location;
+        daughter_location = positions.second;
+/*
         PRINT_VARIABLE(cell_population.GetCellUsingLocationIndex(0));
         PRINT_VECTOR(expected_parent_location);
         PRINT_VECTOR(parent_location);
-        TS_ASSERT_DELTA(parent_location[0], expected_parent_location[0], 1e-6);
-        TS_ASSERT_DELTA(parent_location[1], expected_parent_location[1], 1e-6);
-
-        c_vector<double, 2> daughter_location;
-        daughter_location = positions.second;
         PRINT_VECTOR(p_division_rule_to_set->rGetDaughterLocation());
         PRINT_VECTOR(daughter_location);
+*/
+        //Checking population is yielding the same results
+        TS_ASSERT_DELTA(p_division_rule_to_set->rGetDaughterLocation()[0], expected_daughter_location[0], 1e-6);
+        TS_ASSERT_DELTA(p_division_rule_to_set->rGetDaughterLocation()[1], expected_daughter_location[1], 1e-6);
+        TS_ASSERT_DELTA(parent_location[0], expected_parent_location[0], 1e-6);
+        TS_ASSERT_DELTA(parent_location[1], expected_parent_location[1], 1e-6);
         TS_ASSERT_DELTA(daughter_location[0], expected_daughter_location[0], 1e-6);
         TS_ASSERT_DELTA(daughter_location[1], expected_daughter_location[1], 1e-6);
     }
