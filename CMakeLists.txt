@@ -46,7 +46,7 @@
 find_package(Chaste COMPONENTS cell_based crypt)
 
 # Here we just depend on core components (nothing application-specific).
-find_package(Chaste COMPONENTS cell_based project_DundeeTypeSixSecretion)
+find_package(Chaste COMPONENTS cell_based project_Jon-DundeeTypeSixSecretion)
 
 
 # Alternatively, to specify a Chaste installation directory use a line like that below.
