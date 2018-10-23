@@ -33,7 +33,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#include "ForwardEulerNumericalMethodForCapsules.hpp"
+#include "ForwardEulerNumericalMethodForCapsulesAttractiveEnds.hpp"
 #include "RandomNumberGenerator.hpp"
 #include "TypeSixSecretionEnumerations.hpp"
 #include "UblasCustomFunctions.hpp"
@@ -54,13 +54,13 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-ForwardEulerNumericalMethodForCapsules<ELEMENT_DIM,SPACE_DIM>::ForwardEulerNumericalMethodForCapsules()
+ForwardEulerNumericalMethodForCapsulesAttractiveEnds<ELEMENT_DIM,SPACE_DIM>::ForwardEulerNumericalMethodForCapsulesAttractiveEnds()
     : AbstractNumericalMethod<ELEMENT_DIM,SPACE_DIM>(),mAxialCapsuleGrowth(true)
 {
 }
 
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void ForwardEulerNumericalMethodForCapsules<ELEMENT_DIM,SPACE_DIM>::UpdateAllNodePositions(double dt)
+void ForwardEulerNumericalMethodForCapsulesAttractiveEnds<ELEMENT_DIM,SPACE_DIM>::UpdateAllNodePositions(double dt)
 {
 
 	NodeBasedCellPopulation<SPACE_DIM>* p_node_population= dynamic_cast<NodeBasedCellPopulation<SPACE_DIM>*>(this->mpCellPopulation);
@@ -120,19 +120,19 @@ void ForwardEulerNumericalMethodForCapsules<ELEMENT_DIM,SPACE_DIM>::UpdateAllNod
 }
 
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void ForwardEulerNumericalMethodForCapsules<ELEMENT_DIM, SPACE_DIM>::SetAxialCapsuleGrowth(bool axialCapsuleGrowth)
+void ForwardEulerNumericalMethodForCapsulesAttractiveEnds<ELEMENT_DIM, SPACE_DIM>::SetAxialCapsuleGrowth(bool axialCapsuleGrowth)
 {
 	mAxialCapsuleGrowth = axialCapsuleGrowth;
 }
 
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-double ForwardEulerNumericalMethodForCapsules<ELEMENT_DIM, SPACE_DIM>::CalculateMassOfCapsule(const double length, const double radius)
+double ForwardEulerNumericalMethodForCapsulesAttractiveEnds<ELEMENT_DIM, SPACE_DIM>::CalculateMassOfCapsule(const double length, const double radius)
 {
     return M_PI * radius * radius * (length + 4.0 * radius / 3.0);
 }
 
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-double ForwardEulerNumericalMethodForCapsules<ELEMENT_DIM, SPACE_DIM>::CalculateMomentOfInertiaOfCapsule(const double length, const double radius)
+double ForwardEulerNumericalMethodForCapsulesAttractiveEnds<ELEMENT_DIM, SPACE_DIM>::CalculateMomentOfInertiaOfCapsule(const double length, const double radius)
 {
     const double l = length;
     const double r = radius;
@@ -145,20 +145,20 @@ double ForwardEulerNumericalMethodForCapsules<ELEMENT_DIM, SPACE_DIM>::Calculate
 }
 
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void ForwardEulerNumericalMethodForCapsules<ELEMENT_DIM, SPACE_DIM>::OutputNumericalMethodParameters(out_stream& rParamsFile)
+void ForwardEulerNumericalMethodForCapsulesAttractiveEnds<ELEMENT_DIM, SPACE_DIM>::OutputNumericalMethodParameters(out_stream& rParamsFile)
 {
     // No new parameters to output, so just call method on direct parent class
     AbstractNumericalMethod<ELEMENT_DIM,SPACE_DIM>::OutputNumericalMethodParameters(rParamsFile);
 }
 
 // Explicit instantiation
-template class ForwardEulerNumericalMethodForCapsules<1,1>;
-template class ForwardEulerNumericalMethodForCapsules<1,2>;
-template class ForwardEulerNumericalMethodForCapsules<2,2>;
-template class ForwardEulerNumericalMethodForCapsules<1,3>;
-template class ForwardEulerNumericalMethodForCapsules<2,3>;
-template class ForwardEulerNumericalMethodForCapsules<3,3>;
+template class ForwardEulerNumericalMethodForCapsulesAttractiveEnds<1,1>;
+template class ForwardEulerNumericalMethodForCapsulesAttractiveEnds<1,2>;
+template class ForwardEulerNumericalMethodForCapsulesAttractiveEnds<2,2>;
+template class ForwardEulerNumericalMethodForCapsulesAttractiveEnds<1,3>;
+template class ForwardEulerNumericalMethodForCapsulesAttractiveEnds<2,3>;
+template class ForwardEulerNumericalMethodForCapsulesAttractiveEnds<3,3>;
 
 // Serialization for Boost >= 1.36
 #include "SerializationExportWrapperForCpp.hpp"
-EXPORT_TEMPLATE_CLASS_ALL_DIMS(ForwardEulerNumericalMethodForCapsules)
+EXPORT_TEMPLATE_CLASS_ALL_DIMS(ForwardEulerNumericalMethodForCapsulesAttractiveEnds)

@@ -24,13 +24,13 @@
 
 // Header files included in this project
 #include "TypeSixSecretionEnumerations.hpp"
-#include "ForwardEulerNumericalMethodForCapsules.hpp"
+#include "ForwardEulerNumericalMethodForCapsulesAttractiveEnds.hpp"
 #include "CapsuleForce.hpp"
 #include "AttractiveEndsCapsuleForce.hpp"
 #include "CapsuleOrientationWriter.hpp"
 #include "CapsuleScalingWriter.hpp"
 #include "SquareBoundaryCondition.hpp"
-#include "CapsuleBasedDivisionRule.hpp"
+#include "CapsuleBasedDivisionRuleAttractiveEnds.hpp"
 #include "TypeSixMachineModifier.hpp"
 #include "NodeBasedCellPopulationWithCapsules.hpp"
 #include "TypeSixMachineProperty.hpp"
@@ -98,7 +98,7 @@ public:
 			simulator.SetDt(1.0/1200.0);
 			simulator.SetSamplingTimestepMultiple(1u);
 
-			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<2,2>>();
+			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<2,2>>();
 			simulator.SetNumericalMethod(p_numerical_method);
 
 			/*
@@ -169,7 +169,7 @@ public:
 			simulator.SetDt(1.0/1200.0);
 			simulator.SetSamplingTimestepMultiple(1u);
 
-			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<2,2>>();
+			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<2,2>>();
 			simulator.SetNumericalMethod(p_numerical_method);
 
 			/*
@@ -238,7 +238,7 @@ public:
 			simulator.SetDt(1.0/1200.0);
 			simulator.SetSamplingTimestepMultiple(1u);
 
-			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<2,2>>();
+			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<2,2>>();
 			simulator.SetNumericalMethod(p_numerical_method);
 
 			/*
@@ -307,7 +307,7 @@ public:
 			simulator.SetDt(1.0/1200.0);
 			simulator.SetSamplingTimestepMultiple(1u);
 
-			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<2,2>>();
+			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<2,2>>();
 			simulator.SetNumericalMethod(p_numerical_method);
 
 			/*
@@ -379,7 +379,7 @@ public:
 			simulator.SetDt(1.0/1200.0);
 			simulator.SetSamplingTimestepMultiple(1u);
 
-			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<2,2>>();
+			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<2,2>>();
 			simulator.SetNumericalMethod(p_numerical_method);
 
 			/*
@@ -452,7 +452,7 @@ public:
 			simulator.SetDt(1.0/1200.0);
 			simulator.SetSamplingTimestepMultiple(1u);
 
-			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<2,2>>();
+			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<2,2>>();
 			simulator.SetNumericalMethod(p_numerical_method);
 
 			/*
@@ -522,7 +522,7 @@ public:
 			simulator.SetDt(1.0/1200.0);
 			simulator.SetSamplingTimestepMultiple(1u);
 
-			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<2,2>>();
+			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<2,2>>();
 			simulator.SetNumericalMethod(p_numerical_method);
 
 			/*
@@ -607,7 +607,7 @@ public:
 			simulator.SetDt(1.0/1200.0);
 			simulator.SetSamplingTimestepMultiple(1u);
 
-			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<2,2>>();
+			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<2,2>>();
 			simulator.SetNumericalMethod(p_numerical_method);
 
 			/*
@@ -699,7 +699,7 @@ public:
 			simulator.SetDt(1.0/1200.0);
 			simulator.SetSamplingTimestepMultiple(1u);
 
-			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<2,2>>();
+			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<2,2>>();
 			simulator.SetNumericalMethod(p_numerical_method);
 
 			/*
@@ -791,7 +791,7 @@ public:
 			simulator.SetDt(1.0/1200.0);
 			simulator.SetSamplingTimestepMultiple(1u);
 
-			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<2,2>>();
+			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<2,2>>();
 			simulator.SetNumericalMethod(p_numerical_method);
 
 			/*
@@ -869,7 +869,7 @@ public:
 			simulator.SetDt(1.0/1200.0);
 			simulator.SetSamplingTimestepMultiple(1u);
 
-			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<2,2>>();
+			auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<2,2>>();
 			simulator.SetNumericalMethod(p_numerical_method);
 
 			/*

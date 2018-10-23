@@ -26,13 +26,13 @@
 
 // Header files included in this project
 #include "TypeSixSecretionEnumerations.hpp"
-#include "ForwardEulerNumericalMethodForCapsules.hpp"
+#include "ForwardEulerNumericalMethodForCapsulesAttractiveEnds.hpp"
 #include "CapsuleForce.hpp"
 #include "AttractiveEndsCapsuleForce.hpp"
 #include "CapsuleOrientationWriter.hpp"
 #include "CapsuleScalingWriter.hpp"
 #include "SquareBoundaryCondition.hpp"
-#include "CapsuleBasedDivisionRule.hpp"
+#include "CapsuleBasedDivisionRuleAttractiveEnds.hpp"
 #include "TypeSixMachineModifier.hpp"
 #include "NodeBasedCellPopulationWithCapsules.hpp"
 #include "TypeSixMachineProperty.hpp"
@@ -133,7 +133,7 @@ public:
 		simulator.SetDt(1.0/1200.0);
 		simulator.SetSamplingTimestepMultiple(1u);
 
-		auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<3,3>>();
+		auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<3,3>>();
 		simulator.SetNumericalMethod(p_numerical_method);
 
 		/*
@@ -250,7 +250,7 @@ public:
 		population.AddCellWriter<CapsuleOrientationWriter>();
 		population.AddCellWriter<CapsuleScalingWriter>();
 
-		boost::shared_ptr<AbstractCentreBasedDivisionRule<3,3> > p_division_rule(new CapsuleBasedDivisionRule<3,3>());
+		boost::shared_ptr<AbstractCentreBasedDivisionRule<3,3> > p_division_rule(new CapsuleBasedDivisionRuleAttractiveEnds<3,3>());
 		population.SetCentreBasedDivisionRule(p_division_rule);
 
 
@@ -260,7 +260,7 @@ public:
 		simulator.SetDt(1.0/1200.0);
 		simulator.SetSamplingTimestepMultiple(1u);
 
-		auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<3,3>>();
+		auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<3,3>>();
 		simulator.SetNumericalMethod(p_numerical_method);
 
 		/*
@@ -359,7 +359,7 @@ public:
 			population.AddCellWriter<CellIdWriter>();
 			population.AddCellWriter<CapsuleOrientationWriter>();
 			population.AddCellWriter<CapsuleScalingWriter>();
-			boost::shared_ptr<AbstractCentreBasedDivisionRule<3,3> > p_division_rule(new CapsuleBasedDivisionRule<3,3>());
+			boost::shared_ptr<AbstractCentreBasedDivisionRule<3,3> > p_division_rule(new CapsuleBasedDivisionRuleAttractiveEnds<3,3>());
 			population.SetCentreBasedDivisionRule(p_division_rule);
 
 
@@ -464,7 +464,7 @@ public:
 		population.AddCellWriter<CellIdWriter>();
 		population.AddCellWriter<CapsuleOrientationWriter>();
 		population.AddCellWriter<CapsuleScalingWriter>();
-		boost::shared_ptr<AbstractCentreBasedDivisionRule<3,3> > p_division_rule(new CapsuleBasedDivisionRule<3,3>());
+		boost::shared_ptr<AbstractCentreBasedDivisionRule<3,3> > p_division_rule(new CapsuleBasedDivisionRuleAttractiveEnds<3,3>());
 		population.SetCentreBasedDivisionRule(p_division_rule);
 
 
@@ -496,7 +496,7 @@ public:
 		simulator.SetDt(1.0/1200.0);
 		simulator.SetSamplingTimestepMultiple(30u);
 
-		auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<3,3>>();
+		auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<3,3>>();
 		simulator.SetNumericalMethod(p_numerical_method);
 
 
@@ -604,7 +604,7 @@ public:
 		population.AddCellWriter<CapsuleOrientationWriter>();
 		population.AddCellWriter<CapsuleScalingWriter>();
 
-		boost::shared_ptr<AbstractCentreBasedDivisionRule<3,3> > p_division_rule(new CapsuleBasedDivisionRule<3,3>());
+		boost::shared_ptr<AbstractCentreBasedDivisionRule<3,3> > p_division_rule(new CapsuleBasedDivisionRuleAttractiveEnds<3,3>());
 				population.SetCentreBasedDivisionRule(p_division_rule);
 
 
@@ -614,7 +614,7 @@ public:
 		simulator.SetDt(1.0/1200.0);
 		simulator.SetSamplingTimestepMultiple(1u);
 
-		auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<3,3>>();
+		auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<3,3>>();
 		simulator.SetNumericalMethod(p_numerical_method);
 
 		/*
@@ -716,7 +716,7 @@ public:
         population.AddCellWriter<CapsuleOrientationWriter>();
         population.AddCellWriter<CapsuleScalingWriter>();
 
-        boost::shared_ptr<AbstractCentreBasedDivisionRule<3,3> > p_division_rule(new CapsuleBasedDivisionRule<3,3>());
+        boost::shared_ptr<AbstractCentreBasedDivisionRule<3,3> > p_division_rule(new CapsuleBasedDivisionRuleAttractiveEnds<3,3>());
                  population.SetCentreBasedDivisionRule(p_division_rule);
 
         // Create simulation
@@ -725,7 +725,7 @@ public:
         simulator.SetDt(1.0/1200.0);
         simulator.SetSamplingTimestepMultiple(30u);
 
-        auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<3,3>>();
+        auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<3,3>>();
         simulator.SetNumericalMethod(p_numerical_method);
 
         /*
@@ -830,7 +830,7 @@ public:
            population.AddCellWriter<CapsuleOrientationWriter>();
            population.AddCellWriter<CapsuleScalingWriter>();
 
-           boost::shared_ptr<AbstractCentreBasedDivisionRule<3,3> > p_division_rule(new CapsuleBasedDivisionRule<3,3>());
+           boost::shared_ptr<AbstractCentreBasedDivisionRule<3,3> > p_division_rule(new CapsuleBasedDivisionRuleAttractiveEnds<3,3>());
                     population.SetCentreBasedDivisionRule(p_division_rule);
 
            // Create simulation
@@ -839,7 +839,7 @@ public:
            simulator.SetDt(1.0/1200.0);
            simulator.SetSamplingTimestepMultiple(30u);
 
-           auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<3,3>>();
+           auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<3,3>>();
            simulator.SetNumericalMethod(p_numerical_method);
 
            /*
@@ -936,7 +936,7 @@ public:
               population.AddCellWriter<CapsuleOrientationWriter>();
               population.AddCellWriter<CapsuleScalingWriter>();
 
-              boost::shared_ptr<AbstractCentreBasedDivisionRule<3,3> > p_division_rule(new CapsuleBasedDivisionRule<3,3>());
+              boost::shared_ptr<AbstractCentreBasedDivisionRule<3,3> > p_division_rule(new CapsuleBasedDivisionRuleAttractiveEnds<3,3>());
                        population.SetCentreBasedDivisionRule(p_division_rule);
 
               // Create simulation
@@ -945,7 +945,7 @@ public:
               simulator.SetDt(1.0/1200.0);
               simulator.SetSamplingTimestepMultiple(30u);
 
-              auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<3,3>>();
+              auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<3,3>>();
               simulator.SetNumericalMethod(p_numerical_method);
 
               /*
@@ -1046,7 +1046,7 @@ public:
               population.AddCellWriter<CapsuleOrientationWriter>();
               population.AddCellWriter<CapsuleScalingWriter>();
 
-              boost::shared_ptr<AbstractCentreBasedDivisionRule<3,3> > p_division_rule(new CapsuleBasedDivisionRule<3,3>());
+              boost::shared_ptr<AbstractCentreBasedDivisionRule<3,3> > p_division_rule(new CapsuleBasedDivisionRuleAttractiveEnds<3,3>());
                        population.SetCentreBasedDivisionRule(p_division_rule);
 
               // Create simulation
@@ -1055,7 +1055,7 @@ public:
               simulator.SetDt(1.0/1200.0);
               simulator.SetSamplingTimestepMultiple(30u);
 
-              auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<3,3>>();
+              auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<3,3>>();
               simulator.SetNumericalMethod(p_numerical_method);
 
               /*

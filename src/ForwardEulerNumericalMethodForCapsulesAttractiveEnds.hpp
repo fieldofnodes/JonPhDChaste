@@ -33,8 +33,8 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#ifndef FORWARDEULERNUMERICALMETHODFORCAPSULES_HPP_
-#define FORWARDEULERNUMERICALMETHODFORCAPSULES_HPP_
+#ifndef FORWARDEULERNUMERICALMETHODFORCAPSULESATTRACTIVEENDS_HPP_
+#define FORWARDEULERNUMERICALMETHODFORCAPSULESATTRACTIVEENDS_HPP_
 
 #include "ChasteSerialization.hpp"
 #include <boost/serialization/base_object.hpp>
@@ -46,7 +46,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * where the position and angle are both updated each time step.
  */
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM=ELEMENT_DIM>
-class ForwardEulerNumericalMethodForCapsules : public AbstractNumericalMethod<ELEMENT_DIM,SPACE_DIM> {
+class ForwardEulerNumericalMethodForCapsulesAttractiveEnds : public AbstractNumericalMethod<ELEMENT_DIM,SPACE_DIM> {
 
 private:
 
@@ -87,12 +87,12 @@ public:
     /**
      * Constructor.
      */
-    ForwardEulerNumericalMethodForCapsules();
+    ForwardEulerNumericalMethodForCapsulesAttractiveEnds();
 
     /**
      * Destructor.
      */
-    virtual ~ForwardEulerNumericalMethodForCapsules() = default;
+    virtual ~ForwardEulerNumericalMethodForCapsulesAttractiveEnds() = default;
 
     /**
      * Overridden UpdateAllNodePositions() method.
@@ -115,6 +115,6 @@ public:
 
 // Serialization for Boost >= 1.36
 #include "SerializationExportWrapper.hpp"
-EXPORT_TEMPLATE_CLASS_ALL_DIMS(ForwardEulerNumericalMethodForCapsules)
+EXPORT_TEMPLATE_CLASS_ALL_DIMS(ForwardEulerNumericalMethodForCapsulesAttractiveEnds)
 
-#endif /*FORWARDEULERNUMERICALMETHODFORCAPSULES_HPP_*/
+#endif /*FORWARDEULERNUMERICALMETHODFORCAPSULESATTRACTIVEENDS_HPP_*/
