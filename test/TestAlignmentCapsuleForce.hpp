@@ -20,6 +20,7 @@
 #include "TypeSixSecretionEnumerations.hpp"
 #include "PetscSetupAndFinalize.hpp"
 
+
 #include "Debug.hpp"
 
 class TestAlignmentCapsuleForce : public AbstractCellBasedTestSuite
@@ -28,7 +29,15 @@ public:
 
     void TestGenericEquailty() // throw(Exception)
     {
-    	TS_ASSERT_DELTA(5,5, 1e-9);
+    	c_vector<double, 2u> VectorTest1;
+    	c_vector<double, 2u> VectorTest2;
+    	double dot;
+    	VectorTest1(0) = -1;
+    	VectorTest1(1) = 1;
+    	VectorTest2(0) = 1;
+    	VectorTest2(1) = 1;
+    	dot = VectorTest1(0)*VectorTest2(0) + VectorTest1(1)*VectorTest2(1);
+    	TS_ASSERT_DELTA(dot,0, 1e-9);
     }
 }; // This bracket will close the class: TestAttractiveEndsCapsuleForce : public AbstractCellBasedTestSuite
 

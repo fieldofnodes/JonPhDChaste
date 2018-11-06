@@ -24,6 +24,7 @@ private:
     /** Needed for serialization. */
     friend class boost::serialization::access;
 
+
     /**
      * Archive the object and its member variables.
      *
@@ -91,7 +92,7 @@ public:
      *
      * @param rCellPopulation reference to the cell population
      */
-    void AddAlignmentForceContribution(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation);
+    void AddForceContribution(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation);
 
     /**
      * Overridden OutputForceParameters() method.

@@ -311,7 +311,7 @@ double AlignmentCapsuleForce<ELEMENT_DIM,SPACE_DIM>::CalculateForceMagnitude(con
 }
 
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void AlignmentCapsuleForce<ELEMENT_DIM,SPACE_DIM>::AddAlignmentForceContribution(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation)
+void AlignmentCapsuleForce<ELEMENT_DIM,SPACE_DIM>::AddForceContribution(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation)
 {
     auto p_cell_population = dynamic_cast<NodeBasedCellPopulation<SPACE_DIM>*>(&rCellPopulation);
 
