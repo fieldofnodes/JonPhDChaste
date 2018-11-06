@@ -60,7 +60,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Debug.hpp"
 
-class TestCapsuleBasedDivisionRulesVersionJon : public AbstractCellBasedTestSuite
+class TestCapsuleBasedDivisionRuleAttractiveEndssVersionJon : public AbstractCellBasedTestSuite
 {
 public:
 
@@ -72,6 +72,8 @@ public:
 		 * (we put two cells in each crypt to set off delta-notch patterning) */
 		std::vector<Node<2>*> nodes;
 		nodes.push_back(new Node<2>(0u,  false,  0.0, 0.0));
+		nodes.push_back(new Node<2>(1u,  false,  1.0, 0.0));
+		nodes.push_back(new Node<2>(2u,  false,  2.0, 0.0));
 
 		/*
 		 * We then convert this list of nodes to a `NodesOnlyMesh`,
@@ -85,6 +87,18 @@ public:
 		mesh.GetNode(0u)->rGetNodeAttributes()[NA_THETA] = 0.0;
 		mesh.GetNode(0u)->rGetNodeAttributes()[NA_LENGTH] = 2.0;
 		mesh.GetNode(0u)->rGetNodeAttributes()[NA_RADIUS] = 1.0;
+
+		mesh.GetNode(1u)->AddNodeAttribute(0.0);
+		mesh.GetNode(1u)->rGetNodeAttributes().resize(NA_VEC_LENGTH);
+		mesh.GetNode(1u)->rGetNodeAttributes()[NA_THETA] = 0.5 * M_PI;
+		mesh.GetNode(1u)->rGetNodeAttributes()[NA_LENGTH] = 2.0;
+		mesh.GetNode(1u)->rGetNodeAttributes()[NA_RADIUS] = 1.0;
+
+		mesh.GetNode(2u)->AddNodeAttribute(0.0);
+		mesh.GetNode(2u)->rGetNodeAttributes().resize(NA_VEC_LENGTH);
+		mesh.GetNode(2u)->rGetNodeAttributes()[NA_THETA] = 0.25 * M_PI;
+		mesh.GetNode(2u)->rGetNodeAttributes()[NA_LENGTH] = 2.0;
+		mesh.GetNode(2u)->rGetNodeAttributes()[NA_RADIUS] = 1.0;
 
 		//Create cells
 		std::vector<CellPtr> cells;
@@ -146,7 +160,7 @@ public:
         TS_ASSERT_DELTA(daughter_location[1], expected_daughter_location[1], 1e-6);
     }
 
-    void xTestFixedCentreBasedDivisionRule3d()
+    void TestFixedCentreBasedDivisionRule3d()
     {
     	EXIT_IF_PARALLEL;
 

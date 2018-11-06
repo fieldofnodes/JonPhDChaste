@@ -196,7 +196,7 @@ public:
 
 
 			nodes.push_back(new Node<2>(0u, Create_c_vector(0.0, 0.0)));
-			nodes.push_back(new Node<2>(1u, Create_c_vector(1.5, 2.5)));
+			nodes.push_back(new Node<2>(1u, Create_c_vector(1.5, 1.9)));
 
 
 			/*

@@ -382,6 +382,8 @@ void AttractiveEndsCapsuleForce<ELEMENT_DIM,SPACE_DIM>::AddForceContribution(Abs
 
             const double angle_theta_a = r_node_a.rGetNodeAttributes()[NA_THETA];
             const double angle_theta_b = r_node_b.rGetNodeAttributes()[NA_THETA];
+        	const double angle_phi_a = r_node_a.rGetNodeAttributes()[NA_PHI];
+        	const double angle_phi_b = r_node_b.rGetNodeAttributes()[NA_PHI];
 
             c_vector<double, SPACE_DIM> torque_vec_a;
             c_vector<double, SPACE_DIM> torque_vec_b;
@@ -396,8 +398,7 @@ void AttractiveEndsCapsuleForce<ELEMENT_DIM,SPACE_DIM>::AddForceContribution(Abs
             }
             else
             {
-            	const double angle_phi_a = r_node_a.rGetNodeAttributes()[NA_PHI];
-            	const double angle_phi_b = r_node_b.rGetNodeAttributes()[NA_PHI];
+
 
         		torque_vec_a[0] = contact_dist_a * cos(angle_theta_a) * sin(angle_phi_a);
 				torque_vec_a[1] = contact_dist_a * sin(angle_theta_a) * sin(angle_phi_a);
@@ -429,19 +430,19 @@ void AttractiveEndsCapsuleForce<ELEMENT_DIM,SPACE_DIM>::AddForceContribution(Abs
 					c[2] = u[0]*v[1]-u[1]*v[0];
 					return c;
 			};
-
-
+			//Adding an alignment operator
+			double gamma = 100.0;
 			if (SPACE_DIM==2u)
 			{
-				r_node_a.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product(torque_vec_a, force_b_a);
-				r_node_b.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product(torque_vec_b, force_a_b);
+				r_node_a.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product(torque_vec_a, force_b_a) + gamma*sin(2*(angle_theta_b-angle_theta_a));
+				r_node_b.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product(torque_vec_b, force_a_b) - gamma*sin(2*(angle_theta_b-angle_theta_a));
 			}
 			else
 			{
-				r_node_a.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product_3d(torque_vec_a, force_b_a)[2];
-				r_node_b.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product_3d(torque_vec_b, force_a_b)[2];
-				r_node_a.rGetNodeAttributes()[NA_APPLIED_PHI] -= cross_product_3d(torque_vec_a, force_b_a)[0];
-				r_node_b.rGetNodeAttributes()[NA_APPLIED_PHI] -= cross_product_3d(torque_vec_b, force_a_b)[0];
+				r_node_a.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product_3d(torque_vec_a, force_b_a)[2];// + gamma*sin(2*(angle_theta_b-angle_theta_a));
+				r_node_b.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product_3d(torque_vec_b, force_a_b)[2];// - gamma*sin(2*(angle_theta_b-angle_theta_a));
+				r_node_a.rGetNodeAttributes()[NA_APPLIED_PHI] -= cross_product_3d(torque_vec_a, force_b_a)[0]+ gamma*cos((angle_phi_b-angle_phi_a));
+				r_node_b.rGetNodeAttributes()[NA_APPLIED_PHI] -= cross_product_3d(torque_vec_b, force_a_b)[0]- gamma*cos((angle_phi_b-angle_phi_a));
 			}
 
             r_node_b.AddAppliedForceContribution(force_a_b);
