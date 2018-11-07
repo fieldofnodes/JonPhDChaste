@@ -196,7 +196,7 @@ public:
 
 
 			nodes.push_back(new Node<2>(0u, Create_c_vector(0.0, 0.0)));
-			nodes.push_back(new Node<2>(1u, Create_c_vector(1.5, 1.9)));
+			nodes.push_back(new Node<2>(1u, Create_c_vector(1.0+(1.1*(sqrt(2.0)/2.0)), 1.0+(1.1*(sqrt(2.0)/2.0)))));
 
 
 			/*
@@ -214,7 +214,7 @@ public:
 
 			mesh.GetNode(1u)->AddNodeAttribute(0.0);
 			mesh.GetNode(1u)->rGetNodeAttributes().resize(NA_VEC_LENGTH);
-			mesh.GetNode(1u)->rGetNodeAttributes()[NA_THETA] = 0.5*M_PI;
+			mesh.GetNode(1u)->rGetNodeAttributes()[NA_THETA] = 0.49*M_PI;
 			mesh.GetNode(1u)->rGetNodeAttributes()[NA_LENGTH] = 2.0;
 			mesh.GetNode(1u)->rGetNodeAttributes()[NA_RADIUS] = 0.5;
 

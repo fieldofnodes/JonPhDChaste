@@ -349,6 +349,10 @@ void AttractiveEndsCapsuleForce<ELEMENT_DIM,SPACE_DIM>::AddForceContribution(Abs
          ++iter)
     {
         iter->rGetNodeAttributes()[NA_APPLIED_THETA] = 0.0;
+        if (SPACE_DIM==3u)
+        {
+        	iter->rGetNodeAttributes()[NA_APPLIED_PHI] = 0.0;
+        }
     }
 
     // Calculate force and applied angle contributions from each pair
@@ -435,7 +439,13 @@ void AttractiveEndsCapsuleForce<ELEMENT_DIM,SPACE_DIM>::AddForceContribution(Abs
 			if (SPACE_DIM==2u)
 			{
 				r_node_a.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product(torque_vec_a, force_b_a) + gamma*sin(2*(angle_theta_b-angle_theta_a));
+		       // TRACE("Capsule Attractive Ends A Applied Theta");
+		        //PRINT_VARIABLE(NA_APPLIED_THETA);
+
 				r_node_b.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product(torque_vec_b, force_a_b) - gamma*sin(2*(angle_theta_b-angle_theta_a));
+		        //TRACE("Capsule Attractive Ends B Applied Theta");
+		        //PRINT_VARIABLE(NA_APPLIED_THETA);
+
 			}
 			else
 			{
