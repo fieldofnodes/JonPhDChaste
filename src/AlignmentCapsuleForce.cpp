@@ -18,24 +18,25 @@
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void AlignmentCapsuleForce<ELEMENT_DIM, SPACE_DIM>::SetYoungModulus(double youngModulus)
+void AlignmentCapsuleForce<ELEMENT_DIM, SPACE_DIM>::SetGamma(double Gamma)
 
 {
-	mYoungModulus=youngModulus;
+	mGamma=Gamma;
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-double AlignmentCapsuleForce<ELEMENT_DIM, SPACE_DIM>::GetYoungModulus()
+double AlignmentCapsuleForce<ELEMENT_DIM, SPACE_DIM>::GetGamma()
 
 {
-	return mYoungModulus;
+	return mGamma;
 }
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 AlignmentCapsuleForce<ELEMENT_DIM, SPACE_DIM>::AlignmentCapsuleForce()
         : CapsuleForce<ELEMENT_DIM, SPACE_DIM>(),
-          mYoungModulus(100.0)
+          mGamma(100.0)
+
 {
     // Has to be either element and space dimensions are both 2 or both 3.
     assert((ELEMENT_DIM == 2u && SPACE_DIM == 2u) || (ELEMENT_DIM == 3u && SPACE_DIM == 3u));
@@ -299,7 +300,7 @@ double AlignmentCapsuleForce<ELEMENT_DIM,SPACE_DIM>::CalculateForceMagnitude(con
                                                                     const double radiusB)
 {
     const double effective_radius = 2.0 * radiusA * radiusB / (radiusA + radiusB);
-    const double force = 4.0 * mYoungModulus * pow(overlap, 1.5) * sqrt(effective_radius) / 3.0;
+    const double force = -2.0 * mGamma * pow(fabs(overlap), 1.5) * sqrt(effective_radius);
 
     // Horrific hack to stop explosions after division and before appropriate length is set!
     if (overlap > radiusA)
@@ -320,29 +321,17 @@ void AlignmentCapsuleForce<ELEMENT_DIM,SPACE_DIM>::AddForceContribution(Abstract
         EXCEPTION("Capsule force only works with AbstractCentreBasedCellPopulation");
     }
 
-    // Set all applied angles back to zero
-    for (auto iter = p_cell_population->rGetMesh().GetNodeIteratorBegin();
-         iter != p_cell_population->rGetMesh().GetNodeIteratorEnd();
-         ++iter)
-    {
-        iter->rGetNodeAttributes()[NA_APPLIED_THETA] = 0.0;
-        if (SPACE_DIM==3u)
-        {
-        	iter->rGetNodeAttributes()[NA_APPLIED_PHI] = 0.0;
-        }
-    }
 
     // Calculate force and applied angle contributions from each pair
     for (auto& node_pair : p_cell_population->rGetNodePairs())
     {
         Node<SPACE_DIM>& r_node_a = *(node_pair.first);
         Node<SPACE_DIM>& r_node_b = *(node_pair.second);
-
         c_vector<double, SPACE_DIM> force_direction_a_to_b;
 		double contact_dist_a;
-		double contact_dist_b;
+        double contact_dist_b;
 
-
+       
 
 		double overlap = CalculateForceDirectionAndContactPoints(r_node_a,
 																 r_node_b,
@@ -350,83 +339,33 @@ void AlignmentCapsuleForce<ELEMENT_DIM,SPACE_DIM>::AddForceContribution(Abstract
 																 contact_dist_a,
 																 contact_dist_b);
 
-		if (overlap > 0.0)
+        const double angle_theta_a = r_node_a.rGetNodeAttributes()[NA_THETA];
+        const double angle_theta_b = r_node_b.rGetNodeAttributes()[NA_THETA];
+        //const double angle_phi_a = r_node_a.rGetNodeAttributes()[NA_PHI];
+        //const double angle_phi_b = r_node_b.rGetNodeAttributes()[NA_PHI];
+        double radius_a = r_node_a.rGetNodeAttributes()[NA_RADIUS];
+        double deltastar = 0.25*radius_a;
+		if (overlap > -1.0*deltastar)
 		{
-
-            const double radius_a = r_node_a.rGetNodeAttributes()[NA_RADIUS];
-            const double radius_b = r_node_b.rGetNodeAttributes()[NA_RADIUS];
-            double force_magnitude = CalculateForceMagnitude(overlap, radius_a, radius_b);
-
-
-            c_vector<double, SPACE_DIM> force_a_b = force_direction_a_to_b * force_magnitude;
-            c_vector<double, SPACE_DIM> force_b_a = -1.0 * force_a_b;
-
-            const double angle_theta_a = r_node_a.rGetNodeAttributes()[NA_THETA];
-            const double angle_theta_b = r_node_b.rGetNodeAttributes()[NA_THETA];
-
-            c_vector<double, SPACE_DIM> torque_vec_a;
-            c_vector<double, SPACE_DIM> torque_vec_b;
-            c_vector<double, SPACE_DIM> cross_torque_vec;
-
-            if (SPACE_DIM==2u)
-            {
-				torque_vec_a[0] = contact_dist_a * cos(angle_theta_a);
-				torque_vec_a[1] = contact_dist_a * sin(angle_theta_a);
-				torque_vec_b[0] = contact_dist_b * cos(angle_theta_b);
-				torque_vec_b[1] = contact_dist_b * sin(angle_theta_b);
-            }
-            else
-            {
-            	const double angle_phi_a = r_node_a.rGetNodeAttributes()[NA_PHI];
-            	const double angle_phi_b = r_node_b.rGetNodeAttributes()[NA_PHI];
-
-        		torque_vec_a[0] = contact_dist_a * cos(angle_theta_a) * sin(angle_phi_a);
-				torque_vec_a[1] = contact_dist_a * sin(angle_theta_a) * sin(angle_phi_a);
-				torque_vec_a[2] = contact_dist_a * cos(angle_phi_a);
-
-				torque_vec_b[0] = contact_dist_b * cos(angle_theta_b) * sin(angle_phi_b);
-				torque_vec_b[1] = contact_dist_b * sin(angle_theta_b) * sin(angle_phi_b);
-				torque_vec_b[2] = contact_dist_b * cos(angle_phi_b);
-            }
-
-			// Calculate the 2D cross product of two vectors
-        	//cross_torque_vec = torque_vec_a[0]*torque_vec_b[1]-torque_vec_b[0]*torque_vec_a[1];
-			auto cross_product = [](c_vector<double, SPACE_DIM> u, c_vector<double, SPACE_DIM> v) -> double
+           
+			double angle_between_a_b;
+            angle_between_a_b = angle_theta_b-angle_theta_a;
+            PRINT_VARIABLE(fabs(angle_between_a_b));
+			//if (SPACE_DIM==2u && angle_between_a_b < M_PI/2.0)
+			
+			//{
+				r_node_a.rGetNodeAttributes()[NA_APPLIED_THETA] += mGamma*sin(2*(angle_between_a_b));
+				r_node_b.rGetNodeAttributes()[NA_APPLIED_THETA] += (-1.0)*mGamma*sin(2*(angle_between_a_b));
+			//}
+			//else if (SPACE_DIM==2u && angle_between_a_b > M_PI/2.0)
 			{
-				return u[0] * v[1] - u[1] * v[0];
-			};
-
-			// Calculate the 3D cross product of two vectors
-			auto cross_product_3d = [](c_vector<double, SPACE_DIM> u, c_vector<double, SPACE_DIM> v) -> c_vector<double, SPACE_DIM>
-			{
-            	//Standard cross product where u={u1,u2,u3} and v={v1,v2,v3}
-            	//uxv = {u2v3-u3v2,u3v1-u1v3,u1v2-u2v1}
-//            	cross_torque_vec[0] = torque_vec_a[1]*torque_vec_b[2] - torque_vec_a[2]*torque_vec_b[1];
-//            	cross_torque_vec[1] = torque_vec_a[2]*torque_vec_b[0] - torque_vec_a[0]*torque_vec_b[2];
-//            	cross_torque_vec[2] = torque_vec_a[0]*torque_vec_b[1] - torque_vec_a[1]*torque_vec_b[0];
-					c_vector<double, SPACE_DIM> c;
-					c[0] = u[1]*v[2]-u[2]*v[1];
-					c[1] = u[2]*v[0]-u[0]*v[2];
-					c[2] = u[0]*v[1]-u[1]*v[0];
-					return c;
-			};
-
-
-			if (SPACE_DIM==2u)
-			{
-				r_node_a.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product(torque_vec_a, force_b_a);
-				r_node_b.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product(torque_vec_b, force_a_b);
-			}
-			else
-			{
+				/*
 				r_node_a.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product_3d(torque_vec_a, force_b_a)[2];
 				r_node_b.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product_3d(torque_vec_b, force_a_b)[2];
 				r_node_a.rGetNodeAttributes()[NA_APPLIED_PHI] -= cross_product_3d(torque_vec_a, force_b_a)[0];
 				r_node_b.rGetNodeAttributes()[NA_APPLIED_PHI] -= cross_product_3d(torque_vec_b, force_a_b)[0];
+				*/
 			}
-
-            r_node_b.AddAppliedForceContribution(force_a_b);
-            r_node_a.AddAppliedForceContribution(force_b_a);
 		}
 	}
 }

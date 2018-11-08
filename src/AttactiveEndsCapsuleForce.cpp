@@ -323,7 +323,7 @@ double AttractiveEndsCapsuleForce<ELEMENT_DIM,SPACE_DIM>::CalculateForceMagnitud
 
 
     // Horrific hack to stop explosions after division and before appropriate length is set!
-    if (overlap < deltastar || overlap > 0.0 )//radiusA || (overlap > -0.1 && overlap < -2.0*radiusA) ) // Changed this to 0.0 as opposed to radiusA - as the attractive ends force needs to work when the objects are not touching eachother?
+    if (overlap < deltastar || overlap > 0.0 )
     {
     	return 0.0;
     }
@@ -343,18 +343,6 @@ void AttractiveEndsCapsuleForce<ELEMENT_DIM,SPACE_DIM>::AddForceContribution(Abs
         EXCEPTION("Capsule force only works with AbstractCentreBasedCellPopulation");
     }
 
-    // Set all applied angles back to zero
-    for (auto iter = p_cell_population->rGetMesh().GetNodeIteratorBegin();
-         iter != p_cell_population->rGetMesh().GetNodeIteratorEnd();
-         ++iter)
-    {
-        iter->rGetNodeAttributes()[NA_APPLIED_THETA] = 0.0;
-        if (SPACE_DIM==3u)
-        {
-        	iter->rGetNodeAttributes()[NA_APPLIED_PHI] = 0.0;
-        }
-    }
-
     // Calculate force and applied angle contributions from each pair
     for (auto& node_pair : p_cell_population->rGetNodePairs())
     {
@@ -372,13 +360,14 @@ void AttractiveEndsCapsuleForce<ELEMENT_DIM,SPACE_DIM>::AddForceContribution(Abs
 																 force_direction_a_to_b,
 																 contact_dist_a,
 																 contact_dist_b);
+        const double radius_a = r_node_a.rGetNodeAttributes()[NA_RADIUS];
+        const double radius_b = r_node_b.rGetNodeAttributes()[NA_RADIUS];
+        double force_magnitude = CalculateForceMagnitude(overlap, radius_a, radius_b);
 
-		if (overlap > -1.0)
+		double deltastar = 0.25*radius_a;
+		if (overlap > -1.0*deltastar)
 		{
 
-            const double radius_a = r_node_a.rGetNodeAttributes()[NA_RADIUS];
-            const double radius_b = r_node_b.rGetNodeAttributes()[NA_RADIUS];
-            double force_magnitude = CalculateForceMagnitude(overlap, radius_a, radius_b);
 
 
             c_vector<double, SPACE_DIM> force_a_b = force_direction_a_to_b * force_magnitude;
@@ -414,7 +403,6 @@ void AttractiveEndsCapsuleForce<ELEMENT_DIM,SPACE_DIM>::AddForceContribution(Abs
             }
 
 			// Calculate the 2D cross product of two vectors
-        	//cross_torque_vec = torque_vec_a[0]*torque_vec_b[1]-torque_vec_b[0]*torque_vec_a[1];
 			auto cross_product = [](c_vector<double, SPACE_DIM> u, c_vector<double, SPACE_DIM> v) -> double
 			{
 				return u[0] * v[1] - u[1] * v[0];
@@ -423,36 +411,25 @@ void AttractiveEndsCapsuleForce<ELEMENT_DIM,SPACE_DIM>::AddForceContribution(Abs
 			// Calculate the 3D cross product of two vectors
 			auto cross_product_3d = [](c_vector<double, SPACE_DIM> u, c_vector<double, SPACE_DIM> v) -> c_vector<double, SPACE_DIM>
 			{
-            	//Standard cross product where u={u1,u2,u3} and v={v1,v2,v3}
-            	//uxv = {u2v3-u3v2,u3v1-u1v3,u1v2-u2v1}
-//            	cross_torque_vec[0] = torque_vec_a[1]*torque_vec_b[2] - torque_vec_a[2]*torque_vec_b[1];
-//            	cross_torque_vec[1] = torque_vec_a[2]*torque_vec_b[0] - torque_vec_a[0]*torque_vec_b[2];
-//            	cross_torque_vec[2] = torque_vec_a[0]*torque_vec_b[1] - torque_vec_a[1]*torque_vec_b[0];
 					c_vector<double, SPACE_DIM> c;
 					c[0] = u[1]*v[2]-u[2]*v[1];
 					c[1] = u[2]*v[0]-u[0]*v[2];
 					c[2] = u[0]*v[1]-u[1]*v[0];
 					return c;
 			};
-			//Adding an alignment operator
-			double gamma = 100.0;
+
 			if (SPACE_DIM==2u)
 			{
-				r_node_a.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product(torque_vec_a, force_b_a) + gamma*sin(2*(angle_theta_b-angle_theta_a));
-		       // TRACE("Capsule Attractive Ends A Applied Theta");
-		        //PRINT_VARIABLE(NA_APPLIED_THETA);
-
-				r_node_b.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product(torque_vec_b, force_a_b) - gamma*sin(2*(angle_theta_b-angle_theta_a));
-		        //TRACE("Capsule Attractive Ends B Applied Theta");
-		        //PRINT_VARIABLE(NA_APPLIED_THETA);
+				r_node_a.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product(torque_vec_a, force_b_a);//+100.0*sin(2*(angle_theta_b-angle_theta_a));
+				r_node_b.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product(torque_vec_b, force_a_b);//-100.0*sin(2*(angle_theta_b-angle_theta_a));
 
 			}
 			else
 			{
-				r_node_a.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product_3d(torque_vec_a, force_b_a)[2];// + gamma*sin(2*(angle_theta_b-angle_theta_a));
-				r_node_b.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product_3d(torque_vec_b, force_a_b)[2];// - gamma*sin(2*(angle_theta_b-angle_theta_a));
-				r_node_a.rGetNodeAttributes()[NA_APPLIED_PHI] -= cross_product_3d(torque_vec_a, force_b_a)[0]+ gamma*cos((angle_phi_b-angle_phi_a));
-				r_node_b.rGetNodeAttributes()[NA_APPLIED_PHI] -= cross_product_3d(torque_vec_b, force_a_b)[0]- gamma*cos((angle_phi_b-angle_phi_a));
+				r_node_a.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product_3d(torque_vec_a, force_b_a)[2];
+				r_node_b.rGetNodeAttributes()[NA_APPLIED_THETA] += cross_product_3d(torque_vec_b, force_a_b)[2];
+				r_node_a.rGetNodeAttributes()[NA_APPLIED_PHI] -= cross_product_3d(torque_vec_a, force_b_a)[0];
+				r_node_b.rGetNodeAttributes()[NA_APPLIED_PHI] -= cross_product_3d(torque_vec_b, force_a_b)[0];
 			}
 
             r_node_b.AddAppliedForceContribution(force_a_b);

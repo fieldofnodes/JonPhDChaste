@@ -23,14 +23,14 @@
 
 // Header files included in this project
 #include "TypeSixSecretionEnumerations.hpp"
-#include "ForwardEulerNumericalMethodForCapsulesAttractiveEnds.hpp"
+#include "ForwardEulerNumericalMethodForCapsules.hpp"
 #include "CapsuleForce.hpp"
 #include "RepulsionForce.hpp"
 #include "AttractiveEndsCapsuleForce.hpp"
 #include "CapsuleOrientationWriter.hpp"
 #include "CapsuleScalingWriter.hpp"
 #include "SquareBoundaryCondition.hpp"
-#include "CapsuleBasedDivisionRuleAttractiveEnds.hpp"
+#include "CapsuleBasedDivisionRule.hpp"
 #include "TypeSixMachineModifier.hpp"
 #include "NodeBasedCellPopulationWithCapsules.hpp"
 #include "TypeSixMachineProperty.hpp"
@@ -111,7 +111,7 @@ public:
 		population.AddCellWriter<CapsuleOrientationWriter>();
 		population.AddCellWriter<CapsuleScalingWriter>();
 
-		boost::shared_ptr<AbstractCentreBasedDivisionRule<2,2> > p_division_rule(new CapsuleBasedDivisionRuleAttractiveEnds<2,2>());
+		boost::shared_ptr<AbstractCentreBasedDivisionRule<2,2> > p_division_rule(new CapsuleBasedDivisionRule<2,2>());
 				 population.SetCentreBasedDivisionRule(p_division_rule);
 
 		// Create simulation
@@ -120,7 +120,7 @@ public:
 		simulator.SetDt(1.0/1200.0);
 		simulator.SetSamplingTimestepMultiple(30u);
 
-		auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<2,2>>();
+		auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<2,2>>();
 		simulator.SetNumericalMethod(p_numerical_method);
 
 		/*
@@ -142,13 +142,14 @@ public:
 		simulator.Solve();
 		PRINT_VARIABLE(simulator.rGetCellPopulation().GetNumRealCells());
 	}
-	void TestAttractiveEnds2dCapsuleDivisionRepulsionForce	()
+	void TestAttractiveEnds2dCapsuleDivisionTwoCapsules	()
 	{
 		EXIT_IF_PARALLEL;
 		// Create some capsules
 		std::vector<Node<2>*> nodes;
 
 		nodes.push_back(new Node<2>(0u, Create_c_vector(0.0, 0.0)));
+		nodes.push_back(new Node<2>(1u, Create_c_vector(1.0+(1.1*(sqrt(2.0)/2.0)), 1.0+(1.1*(sqrt(2.0)/2.0)))));
 
 
 		/*
@@ -163,6 +164,12 @@ public:
 		mesh.GetNode(0u)->rGetNodeAttributes()[NA_THETA] = 0.0*M_PI;
 		mesh.GetNode(0u)->rGetNodeAttributes()[NA_LENGTH] = 2.0;
 		mesh.GetNode(0u)->rGetNodeAttributes()[NA_RADIUS] = 0.5;
+
+		mesh.GetNode(1u)->AddNodeAttribute(0.0);
+		mesh.GetNode(1u)->rGetNodeAttributes().resize(NA_VEC_LENGTH);
+		mesh.GetNode(1u)->rGetNodeAttributes()[NA_THETA] = 0.49*M_PI;
+		mesh.GetNode(1u)->rGetNodeAttributes()[NA_LENGTH] = 2.0;
+		mesh.GetNode(1u)->rGetNodeAttributes()[NA_RADIUS] = 0.5;
 
 
 		//Create cells
@@ -205,16 +212,16 @@ public:
 		population.AddCellWriter<CapsuleOrientationWriter>();
 		population.AddCellWriter<CapsuleScalingWriter>();
 
-		boost::shared_ptr<AbstractCentreBasedDivisionRule<2,2> > p_division_rule(new CapsuleBasedDivisionRuleAttractiveEnds<2,2>());
+		boost::shared_ptr<AbstractCentreBasedDivisionRule<2,2> > p_division_rule(new CapsuleBasedDivisionRule<2,2>());
 				 population.SetCentreBasedDivisionRule(p_division_rule);
 
 		// Create simulation
 		OffLatticeSimulation<2> simulator(population);
-		simulator.SetOutputDirectory("TestAttractiveEndsDivision2dOneCapsuleRepulsionForce");
+		simulator.SetOutputDirectory("TestAttractiveEndsDivision2dTwoCapsules");
 		simulator.SetDt(1.0/1200.0);
 		simulator.SetSamplingTimestepMultiple(30u);
 
-		auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsulesAttractiveEnds<2,2>>();
+		auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<2,2>>();
 		simulator.SetNumericalMethod(p_numerical_method);
 
 		/*
@@ -229,8 +236,8 @@ public:
 		auto p_atractive_ends_capsule_force = boost::make_shared<AttractiveEndsCapsuleForce<2>>();
 		simulator.AddForce(p_atractive_ends_capsule_force);
 
-		auto p_repulsion_force = boost::make_shared<RepulsionForce<2>>();
-		simulator.AddForce(p_atractive_ends_capsule_force);
+		//auto p_repulsion_force = boost::make_shared<RepulsionForce<2>>();
+		//simulator.AddForce(p_atractive_ends_capsule_force);
 
 		/* We then set an end time and run the simulation */
 		simulator.SetEndTime(6.0);

@@ -18,11 +18,13 @@ class AlignmentCapsuleForce : public CapsuleForce<ELEMENT_DIM, SPACE_DIM>
 
 private:
 
-    /** The elastic modulus of both cells (Farrell et al) */
-    double mYoungModulus;
+    /** The gamme coefficient for the bending stiffness energy */
+    double mGamma;
+
 
     /** Needed for serialization. */
     friend class boost::serialization::access;
+
 
 
     /**
@@ -35,7 +37,8 @@ private:
     void serialize(Archive & archive, const unsigned int version)
     {
         archive & boost::serialization::base_object<AbstractForce<ELEMENT_DIM, SPACE_DIM> >(*this);
-        archive & mYoungModulus;
+        archive & mGamma;
+
     }
 
     /**
@@ -101,8 +104,8 @@ public:
      */
     virtual void OutputForceParameters(out_stream& rParamsFile);
 
-    void SetYoungModulus(double youngModulus);
-    double GetYoungModulus();
+    void SetGamma(double Gamma);
+    double GetGamma();
 
 };
 
