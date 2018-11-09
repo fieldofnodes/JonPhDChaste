@@ -4,4 +4,5 @@ TestCapsuleSimulation3dAttractiveEnds.hpp
 TestCapsuleAttractiveEndsForce2dDivision.hpp
 TestCapsuleAttractiveEndsForce3dDivision.hpp
 TestCapsuleDivisionBasedRulesVersionJon.hpp
-TestAlignmentCapsuleForce.hpp
+TestAlignmentCapsuleForce2d.hpp
+TestAttractiveEndsAlignmentCapsuleForce2d.hpp

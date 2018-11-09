@@ -41,43 +41,6 @@ private:
 
     }
 
-    /**
-     * Calculate the overlap between two capsules. This is the sum of the radii minus the shortest distance between
-     * the capsules.
-     * @param rNodeA the node at the centre of mass of the first capsule
-     * @param rNodeB the node at the centre of mass of the second capsule
-     * @param rShortestDistance the distance between the line segments.
-     *
-     * @return the overlap
-     */
-    double CalculateOverlapBetweenCapsules(Node<SPACE_DIM>& rNodeA, Node<SPACE_DIM>& rNodeB, const double& rShortestDistance);
-
-    /**
-     * Calculate the direction of the force between two overlapping capsules, and the distance along the rod from each
-     * capsule's centre of mass to the point at which the force will act.
-     * @param rNodeA the node at the centre of mass of the first capsule
-     * @param rNodeB the node at the centre of mass of the second capsule
-     * @param rVecAToB filled in as a unit vector from the contact point on capsule A to that on capsule B
-     * @param rContactDistA filled in as the distance from the centre of mass of capsule A to contact point
-     * @param rContactDistB filled in as the distance from the centre of mass of capsule B to contact point
-     *
-     * @return The overlap between the two capsules.
-     */
-    double CalculateForceDirectionAndContactPoints(Node<SPACE_DIM>& rNodeA,
-                                                   Node<SPACE_DIM>& rNodeB,
-                                                   c_vector<double, SPACE_DIM>& rVecAToB,
-                                                   double& rContactDistA,
-                                                   double& rContactDistB);
-
-    /**
-     * Calculate the magnitude of the repulsion force given the overlap and capsule radii
-     * @param overlap the overlap between capsules
-     * @param radiusA the radius of capsule A
-     * @param radiusB the radius of capsule B
-     * @return the magnitude of the repulsion force
-     */
-    double CalculateForceMagnitude(const double overlap, const double radiusA, const double radiusB);
-
 public:
 
     /**
