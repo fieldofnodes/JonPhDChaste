@@ -59,19 +59,78 @@ void AlignmentCapsuleForce<ELEMENT_DIM,SPACE_DIM>::AddForceContribution(Abstract
     {
         Node<SPACE_DIM>& r_node_a = *(node_pair.first);
         Node<SPACE_DIM>& r_node_b = *(node_pair.second);
+    	auto location_a = r_node_a.rGetLocation();
+    	auto location_b = r_node_b.rGetLocation();
+        const double length_a = r_node_a.rGetNodeAttributes()[NA_LENGTH];
+        const double length_b = r_node_b.rGetNodeAttributes()[NA_LENGTH];        
         const double angle_theta_a = r_node_a.rGetNodeAttributes()[NA_THETA];
         const double angle_theta_b = r_node_b.rGetNodeAttributes()[NA_THETA];
-        //const double angle_phi_a = r_node_a.rGetNodeAttributes()[NA_PHI];
-        //const double angle_phi_b = r_node_b.rGetNodeAttributes()[NA_PHI];   
+        const double angle_phi_a = r_node_a.rGetNodeAttributes()[NA_PHI];
+        const double angle_phi_b = r_node_b.rGetNodeAttributes()[NA_PHI];   
 		double angle_between_a_b;
-		angle_between_a_b = angle_theta_a-angle_theta_b;
-		//PRINT_VARIABLE(fabs(angle_between_a_b));
-		//if (SPACE_DIM==2u && angle_between_a_b < M_PI/2.0)
+		
+		c_vector<double,SPACE_DIM> segment_a_point_1;
+		c_vector<double,SPACE_DIM> segment_a_point_2;
+		c_vector<double,SPACE_DIM> segment_b_point_1;
+		c_vector<double,SPACE_DIM> segment_b_point_2;
+		
+		if (SPACE_DIM==3u)
+		{
+			segment_a_point_1[0] = location_a[0] + 0.5 * length_a * cos(angle_theta_a) * sin(angle_phi_a);
+			segment_a_point_1[1] = location_a[1] + 0.5 * length_a * sin(angle_theta_a) * sin(angle_phi_a);
+			segment_a_point_1[2] = location_a[2] + 0.5 * length_a * cos(angle_phi_a);
+		//        PRINT_VECTOR(segment_a_point_1);
+
+			segment_a_point_2[0] = location_a[0] - 0.5 * length_a * cos(angle_theta_a) * sin(angle_phi_a);
+			segment_a_point_2[1] = location_a[1] - 0.5 * length_a * sin(angle_theta_a) * sin(angle_phi_a);
+			segment_a_point_2[2] = location_a[2] - 0.5 * length_a * cos(angle_phi_a);
+		//        PRINT_VECTOR(segment_a_point_2);
+
+			segment_b_point_1[0] = location_b[0] + 0.5 * length_b * cos(angle_theta_b) * sin(angle_phi_b);
+			segment_b_point_1[1] = location_b[1] + 0.5 * length_b * sin(angle_theta_b) * sin(angle_phi_b);
+			segment_b_point_1[2] = location_b[2] + 0.5 * length_b * cos(angle_phi_b);
+		//        PRINT_VECTOR(segment_b_point_1);
+
+			segment_b_point_2[0] = location_b[0] - 0.5 * length_b * cos(angle_theta_b) * sin(angle_phi_b);
+			segment_b_point_2[1] = location_b[1] - 0.5 * length_b * sin(angle_theta_b) * sin(angle_phi_b);
+			segment_b_point_2[2] = location_b[2] - 0.5 * length_b * cos(angle_phi_b);
+		}
+		else
+		{
+			segment_a_point_1[0] = location_a[0] + 0.5 * length_a * cos(angle_theta_a);
+			segment_a_point_1[1] = location_a[1] + 0.5 * length_a * sin(angle_theta_a);
+		//        PRINT_VECTOR(segment_a_point_1);
+
+			segment_a_point_2[0] = location_a[0] - 0.5 * length_a * cos(angle_theta_a);
+			segment_a_point_2[1] = location_a[1] - 0.5 * length_a * sin(angle_theta_a);
+		//        PRINT_VECTOR(segment_a_point_2);
+
+			segment_b_point_1[0] = location_b[0] + 0.5 * length_b * cos(angle_theta_b);
+			segment_b_point_1[1] = location_b[1] + 0.5 * length_b * sin(angle_theta_b);
+		//        PRINT_VECTOR(segment_b_point_1);
+
+			segment_b_point_2[0] = location_b[0] - 0.5 * length_b * cos(angle_theta_b);
+			segment_b_point_2[1] = location_b[1] - 0.5 * length_b * sin(angle_theta_b);
+		}
+		
+		
+		c_vector<double,SPACE_DIM> vector_a;
+		c_vector<double,SPACE_DIM> vector_b;
+		
+		vector_a = segment_a_point_1-segment_a_point_2;
+		vector_b = segment_b_point_1-segment_b_point_2;
+		
+		angle_between_a_b = acos(inner_prod(vector_a,vector_b)/(norm_2(vector_a)*norm_2(vector_b)));
+		//PRINT_VARIABLE(angle_between_a_b);
+		
+		
+		
+		if (SPACE_DIM==2u && angle_between_a_b < M_PI/2.0)
 			
-			//{
-				r_node_a.rGetNodeAttributes()[NA_APPLIED_THETA] += mGamma*sin(2*(angle_between_a_b));
-				r_node_b.rGetNodeAttributes()[NA_APPLIED_THETA] += (-1.0)*mGamma*sin(2*(angle_between_a_b));
-			//}
+			{
+				r_node_a.rGetNodeAttributes()[NA_APPLIED_THETA] += mGamma*sin(2*(angle_theta_a-angle_theta_b));
+				r_node_b.rGetNodeAttributes()[NA_APPLIED_THETA] += (-1.0)*mGamma*sin(2*(angle_theta_a-angle_theta_b));
+			}
 			//else if (SPACE_DIM==2u && angle_between_a_b > M_PI/2.0)
 			{
 				/*
