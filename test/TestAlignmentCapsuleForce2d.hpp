@@ -419,6 +419,7 @@ public:
 		/* We then set an end time and run the simulation */
 		simulator.SetEndTime(100.0/1200.0);
 		simulator.Solve();
+		TS_ASSERT_EQUALS(p_label->GetColour(), 6u);
 	}
 
 	void TestAlignmentCapsuleForceCases2DCase06() 
