@@ -69,16 +69,17 @@ class TestCapsuleLabelToColour : public AbstractCellBasedTestSuite
 {
 public:
 
-	void TestLabelsToColours()
+	void TestCellLabelsToColourAttacker()
 	{
 		EXIT_IF_PARALLEL;
+
 		// Create some capsules
 		std::vector<Node<2>*> nodes;
 
 		nodes.push_back(new Node<2>(0u, Create_c_vector(0.0, 0.0)));
 		nodes.push_back(new Node<2>(1u, Create_c_vector(2.0, 2.0)));
 
-		MAKE_PTR(CellLabel,p_label);
+
 		/*
 		 * We then convert this list of nodes to a `NodesOnlyMesh`,
 		 * which doesn't do very much apart from keep track of the nodes.
@@ -105,6 +106,9 @@ public:
 		//Create cells
 		std::vector<CellPtr> cells;
 		MAKE_PTR(WildTypeCellMutationState, p_state);
+		MAKE_PTR(TypeSixMachineProperty, p_property);
+		// 0 is Attacker and 1 is not attacker
+		p_property -> SetCellTypeLabel(1);
 
 
 		auto p_diff_type = boost::make_shared<DifferentiatedCellProliferativeType>();
@@ -121,7 +125,7 @@ public:
 
 		// Create simulation
 		OffLatticeSimulation<2> simulator(population);
-		simulator.SetOutputDirectory("TestAttractiveEndsAlignmentDivision2dCase01");
+		simulator.SetOutputDirectory("TestCellLabelsToColourAttacker");
 		simulator.SetDt(1.0/1200.0);
 		simulator.SetSamplingTimestepMultiple(30u);
 
@@ -141,21 +145,20 @@ public:
 		/* We then set an end time and run the simulation */
 		simulator.SetEndTime(6.0);
 		simulator.Solve();
-
-		TS_ASSERT_EQUALS(p_label->GetColour(), 5u);
+		PRINT_VARIABLE(p_property -> rGetCellTypeLabel());
+		TS_ASSERT_EQUALS(p_property -> rGetCellTypeLabel(), 1u);
 		//PRINT_VARIABLE(simulator.rGetCellPopulation().GetNumRealCells());
 	}
 
 
 
-	void xTestLabelsToColoursDivision()
+	void TestCellLabelsToColourNotAttacker()
 	{
 		EXIT_IF_PARALLEL;
 		// Create some capsules
 		std::vector<Node<2>*> nodes;
-
 		nodes.push_back(new Node<2>(0u, Create_c_vector(0.0, 0.0)));
-		nodes.push_back(new Node<2>(1u, Create_c_vector(2.0, 2.0)));
+		nodes.push_back(new Node<2>(1u, Create_c_vector(1.5,1.5)));
 
 
 		/*
@@ -167,24 +170,95 @@ public:
 
 		mesh.GetNode(0u)->AddNodeAttribute(0.0);
 		mesh.GetNode(0u)->rGetNodeAttributes().resize(NA_VEC_LENGTH);
-		mesh.GetNode(0u)->rGetNodeAttributes()[NA_THETA] = 0.25*M_PI;
+		mesh.GetNode(0u)->rGetNodeAttributes()[NA_THETA] = 0.0;
 		mesh.GetNode(0u)->rGetNodeAttributes()[NA_LENGTH] = 2.0;
 		mesh.GetNode(0u)->rGetNodeAttributes()[NA_RADIUS] = 0.5;
 
 		mesh.GetNode(1u)->AddNodeAttribute(0.0);
 		mesh.GetNode(1u)->rGetNodeAttributes().resize(NA_VEC_LENGTH);
-		mesh.GetNode(1u)->rGetNodeAttributes()[NA_THETA] = 0.25*M_PI;
+		mesh.GetNode(1u)->rGetNodeAttributes()[NA_THETA] = .25*M_PI;
 		mesh.GetNode(1u)->rGetNodeAttributes()[NA_LENGTH] = 2.0;
 		mesh.GetNode(1u)->rGetNodeAttributes()[NA_RADIUS] = 0.5;
 
-		//Cell Label
-		MAKE_PTR(CellLabel, p_label);
 
+		//Create cells
+		std::vector<CellPtr> cells;
+		auto p_diff_type = boost::make_shared<DifferentiatedCellProliferativeType>();
+		CellsGenerator<NoCellCycleModel, 2> cells_generator;
+		cells_generator.GenerateBasicRandom(cells, mesh.GetNumNodes(), p_diff_type);
+		MAKE_PTR(TypeSixMachineProperty, p_property);
+		// 0 is Attacker and 1 is not attacker
+		p_property -> SetCellTypeLabel(0);
+
+
+		// Create cell population
+		NodeBasedCellPopulationWithCapsules<2> population(mesh, cells);
+
+		population.AddCellWriter<CellIdWriter>();
+		population.AddCellWriter<CapsuleOrientationWriter>();
+		population.AddCellWriter<CapsuleScalingWriter>();
+
+		// Create simulation
+		OffLatticeSimulation<2> simulator(population);
+		simulator.SetOutputDirectory("TestCellLabelsToColourNotAttacker");
+		simulator.SetDt(1.0/1200.0);
+		simulator.SetSamplingTimestepMultiple(1u);
+
+		auto p_numerical_method = boost::make_shared<ForwardEulerNumericalMethodForCapsules<2,2>>();
+		simulator.SetNumericalMethod(p_numerical_method);
+
+		/*
+		 * We now create a force law and pass it to the simulation
+		 * We use linear springs between cells up to a maximum of 1.5 ('relaxed' cell diameters) apart, and add this to the simulation class.
+		 */
+
+		auto p_capsule_force = boost::make_shared<CapsuleForce<2>>();
+		simulator.AddForce(p_capsule_force);
+
+		/* We then set an end time and run the simulation */
+		simulator.SetEndTime(100.0/1200.0);
+		simulator.Solve();
+
+		PRINT_VARIABLE(p_property -> rGetCellTypeLabel());
+		TS_ASSERT_EQUALS(p_property -> rGetCellTypeLabel(), 0u);
+
+	}
+	void TestCellLabelsToColourAttackerDivision()
+	{
+		EXIT_IF_PARALLEL;
+		// Create some capsules
+		std::vector<Node<2>*> nodes;
+		nodes.push_back(new Node<2>(0u, Create_c_vector(0.0, 0.0)));
+		nodes.push_back(new Node<2>(1u, Create_c_vector(1.5,1.5)));
+
+
+		/*
+		 * We then convert this list of nodes to a `NodesOnlyMesh`,
+		 * which doesn't do very much apart from keep track of the nodes.
+		 */
+		NodesOnlyMesh<2> mesh;
+		mesh.ConstructNodesWithoutMesh(nodes, 150.5);
+
+		mesh.GetNode(0u)->AddNodeAttribute(0.0);
+		mesh.GetNode(0u)->rGetNodeAttributes().resize(NA_VEC_LENGTH);
+		mesh.GetNode(0u)->rGetNodeAttributes()[NA_THETA] = 0.0;
+		mesh.GetNode(0u)->rGetNodeAttributes()[NA_LENGTH] = 2.0;
+		mesh.GetNode(0u)->rGetNodeAttributes()[NA_RADIUS] = 0.5;
+
+		mesh.GetNode(1u)->AddNodeAttribute(0.0);
+		mesh.GetNode(1u)->rGetNodeAttributes().resize(NA_VEC_LENGTH);
+		mesh.GetNode(1u)->rGetNodeAttributes()[NA_THETA] = .25*M_PI;
+		mesh.GetNode(1u)->rGetNodeAttributes()[NA_LENGTH] = 2.0;
+		mesh.GetNode(1u)->rGetNodeAttributes()[NA_RADIUS] = 0.5;
 
 		//Create cells
 		std::vector<CellPtr> cells;
 		MAKE_PTR(WildTypeCellMutationState, p_state);
 		MAKE_PTR(TransitCellProliferativeType, p_type);
+		MAKE_PTR(TypeSixMachineProperty, p_property);
+		// 0 is Attacker and 1 is not attacker
+		p_property -> SetCellTypeLabel(0);
+
 		for (unsigned i=0; i<mesh.GetNumNodes(); i++)
 		{
 			UniformCellCycleModel* p_model = new UniformCellCycleModel();
@@ -208,7 +282,7 @@ public:
 
 			MAKE_PTR(TypeSixMachineProperty, p_property);
 			p_property->rGetMachineData().emplace_back(std::pair<unsigned, std::vector<double>>(4, machine_coordinates));
-
+			p_property -> SetCellTypeLabel(0);
 			p_cell->AddCellProperty(p_property);
 
 			cells.push_back(p_cell);
@@ -226,7 +300,7 @@ public:
 
 		// Create simulation
 		OffLatticeSimulation<2> simulator(population);
-		simulator.SetOutputDirectory("TestCapsuleLabelWithColourNoDivision");
+		simulator.SetOutputDirectory("TestCellLabelsToColourAttackerDivision");
 		simulator.SetDt(1.0/1200.0);
 		simulator.SetSamplingTimestepMultiple(30u);
 
@@ -242,23 +316,20 @@ public:
 		simulator.AddForce(p_capsule_force);
 
 
-		auto p_atractive_ends_capsule_force = boost::make_shared<AttractiveEndsCapsuleForce<2>>();
-		p_atractive_ends_capsule_force->SetYoungModulus(100.0);
-		simulator.AddForce(p_atractive_ends_capsule_force);
-
-		auto p_alignment_capsule_force = boost::make_shared<AttractiveEndsAlignmentCapsuleForce<2>>();
-		p_alignment_capsule_force->SetGamma(150.0);
-		simulator.AddForce(p_alignment_capsule_force);
-
-
 
 		/* We then set an end time and run the simulation */
 		simulator.SetEndTime(6.0);
 		simulator.Solve();
-		//PRINT_VARIABLE(simulator.rGetCellPopulation().GetNumRealCells());
-	}
 
-	
+		//PRINT_VARIABLE(simulator.rGetCellPopulation().GetNumRealCells());
+		 for (typename AbstractCellPopulation<2>::Iterator cell_iter = population.Begin();
+		         cell_iter != population.End();
+		         ++cell_iter)
+		    {
+			 PRINT_VARIABLE(p_property -> rGetCellTypeLabel());
+			 TS_ASSERT_EQUALS(p_property -> rGetCellTypeLabel(), 0u);
+			}
+	}
 }; 
 
 #endif /*_TESTCAPSULELABELTOCOLOUR_HPP_*/

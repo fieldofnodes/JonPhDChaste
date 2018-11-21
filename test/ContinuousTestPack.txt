@@ -8,4 +8,4 @@ TestAlignmentCapsuleForce2d.hpp
 TestAttractiveEndsAlignmentCapsuleForce2d.hpp
 TestAlignmentCapsuleForce3d.hpp
 TestCapsuleLabelToColour.hpp
-TestCapsuleLabelToColourTestFromTutorial.hpp
+
