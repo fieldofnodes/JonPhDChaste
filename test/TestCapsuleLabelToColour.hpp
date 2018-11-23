@@ -91,7 +91,7 @@ private:
     }
 public:
 
-	void TestCellLabelsToColourAttacker()
+	void xTestCellLabelsToColourAttacker()
 	{
 		EXIT_IF_PARALLEL;
 		// Create some capsules
@@ -164,7 +164,7 @@ public:
 
 	}
 
-	void TestCellLabelsToColourNotAttacker()
+	void xTestCellLabelsToColourNotAttacker()
 	{
 		EXIT_IF_PARALLEL;
 		// Create some capsules
@@ -236,7 +236,7 @@ public:
 		TS_ASSERT_EQUALS(p_property -> rGetCellTypeLabel(), 0u);
 
 	}
-	void TestCellLabelsToColourAttackerDivision()
+	void xTestCellLabelsToColourAttackerDivision()
 	{
 		EXIT_IF_PARALLEL;
 		// Create some capsules
@@ -344,7 +344,7 @@ public:
 			 TS_ASSERT_EQUALS(p_property -> rGetCellTypeLabel(), 0u);
 			}
 	}
-	void TestCellLabelsToColourNotAttackerDivision()
+	void xTestCellLabelsToColourNotAttackerDivision()
 	{
 		EXIT_IF_PARALLEL;
 		// Create some capsules
@@ -604,8 +604,7 @@ public:
 				MAKE_PTR(TypeSixMachineProperty, p_property1);
 				MAKE_PTR(TypeSixMachineProperty, p_property2);
 				// 0 is Attacker and 1 is not attacker
-				p_property1 -> SetCellTypeLabel(0u);
-				p_property2 -> SetCellTypeLabel(1u);
+
 
 				for (unsigned i=0; i<mesh.GetNumNodes(); i++)
 				{
@@ -618,7 +617,6 @@ public:
 
 					p_cell->SetBirthTime(-0.9);
 					mesh.GetNode(i)->rGetNodeAttributes()[NA_LENGTH] = 2.0 +3.0*p_cell->GetBirthTime()/p_model->GetCellCycleDuration(); ;
-
 
 					double vertical_coordinate = 0.25*(mesh.GetNode(i)->rGetNodeAttributes()[NA_LENGTH]);
 					double azimuthal_coordinate = M_PI ;
@@ -635,7 +633,10 @@ public:
 
 					cells.push_back(p_cell);
 				}
-				RandomlyLabelCells(cells,p_property1,p_property2,0.5);
+				p_property1 -> SetCellTypeLabel(0u);
+		        cells[0]->AddCellProperty(p_property1);
+		        p_property2 -> SetCellTypeLabel(1u);
+		        cells[1]->AddCellProperty(p_property2);
 				// Create cell population
 				NodeBasedCellPopulationWithCapsules<2> population(mesh, cells);
 
