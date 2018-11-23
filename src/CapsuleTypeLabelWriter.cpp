@@ -33,39 +33,40 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#include "CellLabelWriter.hpp"
+#include "CapsuleTypeLabelWriter.hpp"
 #include "AbstractCellPopulation.hpp"
-#include "CellLabel.hpp"
+#include "TypeSixMachineProperty.hpp"
+//#include "CellLabel.hpp"
 
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-CellLabelWriter<ELEMENT_DIM, SPACE_DIM>::CellLabelWriter()
+CapsuleTypeLabelWriter<ELEMENT_DIM, SPACE_DIM>::CapsuleTypeLabelWriter()
     : AbstractCellWriter<ELEMENT_DIM, SPACE_DIM>("results.vizlabels")
 {
-    this->mVtkCellDataName = "Cell labels";
+    this->mVtkCellDataName = "Capsule state";
 }
 
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-double CellLabelWriter<ELEMENT_DIM, SPACE_DIM>::GetCellDataForVtkOutput(CellPtr pCell, AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation)
+double CapsuleTypeLabelWriter<ELEMENT_DIM, SPACE_DIM>::GetCellDataForVtkOutput(CellPtr pCell, AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation)
 {
     double label = 0.0;
-    if (pCell->HasCellProperty<CellLabel>())
+    if (pCell->HasCellProperty<TypeSixMachineProperty>())
     {
-        CellPropertyCollection collection = pCell->rGetCellPropertyCollection().GetProperties<CellLabel>();
-        boost::shared_ptr<CellLabel> p_label = boost::static_pointer_cast<CellLabel>(collection.GetProperty());
-        label = p_label->GetColour();
+        CellPropertyCollection collection = pCell->rGetCellPropertyCollection().GetProperties<TypeSixMachineProperty>();
+        boost::shared_ptr<TypeSixMachineProperty> p_label = boost::static_pointer_cast<TypeSixMachineProperty>(collection.GetProperty());
+        label = p_label->rGetCellTypeLabel();
     }
     return label;
 }
 
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void CellLabelWriter<ELEMENT_DIM, SPACE_DIM>::VisitCell(CellPtr pCell, AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation)
+void CapsuleTypeLabelWriter<ELEMENT_DIM, SPACE_DIM>::VisitCell(CellPtr pCell, AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation)
 {
     unsigned label = 0;
-    if (pCell->HasCellProperty<CellLabel>())
+    if (pCell->HasCellProperty<TypeSixMachineProperty>())
     {
-        CellPropertyCollection collection = pCell->rGetCellPropertyCollection().GetProperties<CellLabel>();
-        boost::shared_ptr<CellLabel> p_label = boost::static_pointer_cast<CellLabel>(collection.GetProperty());
-        label = p_label->GetColour();
+        CellPropertyCollection collection = pCell->rGetCellPropertyCollection().GetProperties<TypeSixMachineProperty>();
+        boost::shared_ptr<TypeSixMachineProperty> p_label = boost::static_pointer_cast<TypeSixMachineProperty>(collection.GetProperty());
+        label = p_label->rGetCellTypeLabel();
     }
 
     *this->mpOutStream << " " << label;
@@ -81,13 +82,13 @@ void CellLabelWriter<ELEMENT_DIM, SPACE_DIM>::VisitCell(CellPtr pCell, AbstractC
 }
 
 // Explicit instantiation
-template class CellLabelWriter<1,1>;
-template class CellLabelWriter<1,2>;
-template class CellLabelWriter<2,2>;
-template class CellLabelWriter<1,3>;
-template class CellLabelWriter<2,3>;
-template class CellLabelWriter<3,3>;
+template class CapsuleTypeLabelWriter<1,1>;
+template class CapsuleTypeLabelWriter<1,2>;
+template class CapsuleTypeLabelWriter<2,2>;
+template class CapsuleTypeLabelWriter<1,3>;
+template class CapsuleTypeLabelWriter<2,3>;
+template class CapsuleTypeLabelWriter<3,3>;
 
 #include "SerializationExportWrapperForCpp.hpp"
 // Declare identifier for the serializer
-EXPORT_TEMPLATE_CLASS_ALL_DIMS(CellLabelWriter)
+EXPORT_TEMPLATE_CLASS_ALL_DIMS(CapsuleTypeLabelWriter)

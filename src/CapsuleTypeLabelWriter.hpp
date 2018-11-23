@@ -33,8 +33,8 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#ifndef CELLLABELWRITER_HPP_
-#define CELLLABELWRITER_HPP_
+#ifndef CAPSULETYPELABELWRITER_HPP_
+#define CAPSULETYPELABELWRITER_HPP_
 
 #include "ChasteSerialization.hpp"
 #include <boost/serialization/base_object.hpp>
@@ -48,7 +48,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * the VTK cell data "Cell labels" by default.
  */
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-class CellLabelWriter : public AbstractCellWriter<ELEMENT_DIM, SPACE_DIM>
+class CapsuleTypeLabelWriter : public AbstractCellWriter<ELEMENT_DIM, SPACE_DIM>
 {
 private:
     /** Needed for serialization. */
@@ -70,7 +70,7 @@ public:
     /**
      * Default constructor.
      */
-    CellLabelWriter();
+    CapsuleTypeLabelWriter();
 
     /* Overridden GetCellDataForVtkOutput() method.
      *
@@ -103,6 +103,6 @@ public:
 };
 
 #include "SerializationExportWrapper.hpp"
-EXPORT_TEMPLATE_CLASS_ALL_DIMS(CellLabelWriter)
+EXPORT_TEMPLATE_CLASS_ALL_DIMS(CapsuleTypeLabelWriter)
 
-#endif /* CELLLABELWRITER_HPP_ */
+#endif /* CAPSULETYPELABELWRITER_HPP_ */
