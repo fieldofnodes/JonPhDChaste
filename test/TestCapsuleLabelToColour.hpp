@@ -127,8 +127,9 @@ public:
 		cells_generator.GenerateBasicRandom(cells, mesh.GetNumNodes(), p_diff_type);
 		MAKE_PTR(TypeSixMachineProperty, p_property);
 		// 0 is Attacker and 1 is not attacker
-		p_property -> SetCellTypeLabel(1u);
 
+
+        p_property -> SetCellTypeLabel(1u);
 
 		// Create cell population
 		NodeBasedCellPopulationWithCapsules<2> population(mesh, cells);
@@ -159,11 +160,30 @@ public:
 		simulator.SetEndTime(100.0/1200.0);
 		simulator.Solve();
 
+		   for (typename AbstractCellPopulation<2>::Iterator cell_iter = simulator.rGetCellPopulation().Begin();
+		         cell_iter != simulator.rGetCellPopulation().End();
+		         ++cell_iter)
+		    {
+		        // Get this cell's type six machine property data
+		        CellPropertyCollection collection = cell_iter->rGetCellPropertyCollection().template GetProperties<TypeSixMachineProperty>();
+		        boost::shared_ptr<TypeSixMachineProperty> p_property = boost::static_pointer_cast<TypeSixMachineProperty>(collection.GetProperty());
+		                unsigned& r_capsule = p_property->rGetCellTypeLabel();
+		                TS_ASSERT_EQUALS(r_capsule,1u);
+		    }
 
         // Test some simulation statistics
-        TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetNumAllCells(), 2u); //No birth yet
-        PRINT_VECTOR(simulator.rGetCellPopulation().GetNode(0u)->rGetLocation());
-        TS_ASSERT_DELTA(simulator.rGetCellPopulation().GetNode(0u)->rGetLocation()(0),0,1e-2);
+		//PRINT_VARIABLE(population.rGetCells().front()->GetCellId());
+		//TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetCellId(), 2u); //No birth yet
+        //PRINT_VARIABLE(simulator.rGetCellPopulation().GetNode(0u)->GetCellId());
+        //TS_ASSERT_DELTA(simulator.rGetCellPopulation().GetNode(0u)->rGetLocation()(0),0,1e-2);
+        //PRINT_VECTOR(simulator.rGetCellPopulation().GetNode(0u)->());
+        //PRINT_VARIABLE(population.GetNode(0u)->rGetCellTypeLabel());
+        //TS_ASSERT_EQUALS(population.rGetCells().front()->HasCellProperty<TypeSixMachineProperty>(), true);
+        //TS_ASSERT_EQUALS(population.rGetCells().back()->HasCellProperty<TypeSixMachineProperty>(), true);
+       // PRINT_VARIABLE(population.rGetCells().front()->HasCellProperty<TypeSixMachineProperty>());
+
+
+
 	}
 
 	void NoTestCellLabelsToColourNotAttacker()
