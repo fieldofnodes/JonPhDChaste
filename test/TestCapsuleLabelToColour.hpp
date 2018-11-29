@@ -126,10 +126,15 @@ public:
 		CellsGenerator<NoCellCycleModel, 2> cells_generator;
 		cells_generator.GenerateBasicRandom(cells, mesh.GetNumNodes(), p_diff_type);
 		MAKE_PTR(TypeSixMachineProperty, p_property);
-		// 0 is Attacker and 1 is not attacker
+		MAKE_PTR(TypeSixMachineProperty, p_property1);
+		MAKE_PTR(TypeSixMachineProperty, p_property2);
+        p_property1 -> SetCellTypeLabel(0u);
+        cells[0]->AddCellProperty(p_property1);
+        p_property2 -> SetCellTypeLabel(1u);
+        cells[1]->AddCellProperty(p_property2);
 
 
-        p_property -> SetCellTypeLabel(1u);
+
 
 		// Create cell population
 		NodeBasedCellPopulationWithCapsules<2> population(mesh, cells);
@@ -160,33 +165,37 @@ public:
 		simulator.SetEndTime(100.0/1200.0);
 		simulator.Solve();
 
-		   for (typename AbstractCellPopulation<2>::Iterator cell_iter = simulator.rGetCellPopulation().Begin();
+		for (typename AbstractCellPopulation<2>::Iterator cell_iter = simulator.rGetCellPopulation().Begin();
 		         cell_iter != simulator.rGetCellPopulation().End();
 		         ++cell_iter)
 		    {
 		        // Get this cell's type six machine property data
-		        CellPropertyCollection collection = cell_iter->rGetCellPropertyCollection().template GetProperties<TypeSixMachineProperty>();
-		        boost::shared_ptr<TypeSixMachineProperty> p_property = boost::static_pointer_cast<TypeSixMachineProperty>(collection.GetProperty());
-		                unsigned& r_capsule = p_property->rGetCellTypeLabel();
-		                TS_ASSERT_EQUALS(r_capsule,1u);
+				CellPropertyCollection collection = cell_iter->rGetCellPropertyCollection().template GetProperties<TypeSixMachineProperty>();
+		        if (collection.GetSize() != 1)
+		        {
+		            EXCEPTION("TypeSixMachineModifier cannot be used unless each cell has a TypeSixMachineProperty");
+		        }
+		        	boost::shared_ptr<TypeSixMachineProperty> p_property_test = boost::static_pointer_cast<TypeSixMachineProperty>(collection.GetProperty());
+		        	unsigned& r_capsule_property = p_property_test->rGetCellTypeLabel();
+		        	if (cell_iter -> GetCellId() == 0)
+		        	{
+		        		TS_ASSERT_EQUALS(r_capsule_property, p_property1 -> rGetCellTypeLabel());
+		        		PRINT_VARIABLE(r_capsule_property);
+		        		PRINT_VARIABLE(p_property1 -> rGetCellTypeLabel());
+		        	} else
+		        	{
+		        		TS_ASSERT_EQUALS(r_capsule_property, p_property2 -> rGetCellTypeLabel());
+		        		PRINT_VARIABLE(r_capsule_property);
+		        		PRINT_VARIABLE(p_property2 -> rGetCellTypeLabel());
+		        	}
+
+
 		    }
-
-        // Test some simulation statistics
-		//PRINT_VARIABLE(population.rGetCells().front()->GetCellId());
-		//TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetCellId(), 2u); //No birth yet
-        //PRINT_VARIABLE(simulator.rGetCellPopulation().GetNode(0u)->GetCellId());
-        //TS_ASSERT_DELTA(simulator.rGetCellPopulation().GetNode(0u)->rGetLocation()(0),0,1e-2);
-        //PRINT_VECTOR(simulator.rGetCellPopulation().GetNode(0u)->());
-        //PRINT_VARIABLE(population.GetNode(0u)->rGetCellTypeLabel());
-        //TS_ASSERT_EQUALS(population.rGetCells().front()->HasCellProperty<TypeSixMachineProperty>(), true);
-        //TS_ASSERT_EQUALS(population.rGetCells().back()->HasCellProperty<TypeSixMachineProperty>(), true);
-       // PRINT_VARIABLE(population.rGetCells().front()->HasCellProperty<TypeSixMachineProperty>());
-
 
 
 	}
 
-	void NoTestCellLabelsToColourNotAttacker()
+	void TestCellLabelsToColourNotAttacker()
 	{
 		EXIT_IF_PARALLEL;
 		// Create some capsules
@@ -221,8 +230,12 @@ public:
 		CellsGenerator<NoCellCycleModel, 2> cells_generator;
 		cells_generator.GenerateBasicRandom(cells, mesh.GetNumNodes(), p_diff_type);
 		MAKE_PTR(TypeSixMachineProperty, p_property);
-		// 0 is Attacker and 1 is not attacker
-		p_property -> SetCellTypeLabel(0u);
+		MAKE_PTR(TypeSixMachineProperty, p_property1);
+		MAKE_PTR(TypeSixMachineProperty, p_property2);
+        p_property1 -> SetCellTypeLabel(0u);
+        cells[0]->AddCellProperty(p_property1);
+        p_property2 -> SetCellTypeLabel(0u);
+        cells[1]->AddCellProperty(p_property2);
 
 
 		// Create cell population
@@ -253,12 +266,34 @@ public:
 		/* We then set an end time and run the simulation */
 		simulator.SetEndTime(100.0/1200.0);
 		simulator.Solve();
+		for (typename AbstractCellPopulation<2>::Iterator cell_iter = simulator.rGetCellPopulation().Begin();
+		         cell_iter != simulator.rGetCellPopulation().End();
+		         ++cell_iter)
+		    {
+		        // Get this cell's type six machine property data
+				CellPropertyCollection collection = cell_iter->rGetCellPropertyCollection().template GetProperties<TypeSixMachineProperty>();
+		        if (collection.GetSize() != 1)
+		        {
+		            EXCEPTION("TypeSixMachineModifier cannot be used unless each cell has a TypeSixMachineProperty");
+		        }
+		        	boost::shared_ptr<TypeSixMachineProperty> p_property_test = boost::static_pointer_cast<TypeSixMachineProperty>(collection.GetProperty());
+		        	unsigned& r_capsule_property = p_property_test->rGetCellTypeLabel();
+		        	if (cell_iter -> GetCellId() == 0)
+		        	{
+		        		TS_ASSERT_EQUALS(r_capsule_property, p_property1 -> rGetCellTypeLabel());
+		        		PRINT_VARIABLE(r_capsule_property);
+		        		PRINT_VARIABLE(p_property1 -> rGetCellTypeLabel());
+		        	} else
+		        	{
+		        		TS_ASSERT_EQUALS(r_capsule_property, p_property2 -> rGetCellTypeLabel());
+		        		PRINT_VARIABLE(r_capsule_property);
+		        		PRINT_VARIABLE(p_property2 -> rGetCellTypeLabel());
+		        	}
 
-		PRINT_VARIABLE(p_property -> rGetCellTypeLabel());
-		TS_ASSERT_EQUALS(p_property -> rGetCellTypeLabel(), 0u);
 
+		    }
 	}
-	void NoTestCellLabelsToColourAttackerDivision()
+	void xTestCellLabelsToColourAttackerDivision()
 	{
 		EXIT_IF_PARALLEL;
 		// Create some capsules
@@ -291,8 +326,8 @@ public:
 		MAKE_PTR(WildTypeCellMutationState, p_state);
 		MAKE_PTR(TransitCellProliferativeType, p_type);
 		MAKE_PTR(TypeSixMachineProperty, p_property);
-		// 0 is Attacker and 1 is not attacker
-		p_property -> SetCellTypeLabel(0);
+		MAKE_PTR(TypeSixMachineProperty, p_property1);
+		MAKE_PTR(TypeSixMachineProperty, p_property2);
 
 		for (unsigned i=0; i<mesh.GetNumNodes(); i++)
 		{
@@ -315,10 +350,20 @@ public:
 			machine_coordinates.push_back(vertical_coordinate);
 			machine_coordinates.push_back(azimuthal_coordinate);
 
-			MAKE_PTR(TypeSixMachineProperty, p_property);
+
+
 			p_property->rGetMachineData().emplace_back(std::pair<unsigned, std::vector<double>>(4, machine_coordinates));
-			p_property -> SetCellTypeLabel(0);
-			p_cell->AddCellProperty(p_property);
+	       /*
+			if (i == 0)
+	        {
+	        	p_property1 -> SetCellTypeLabel(0u);
+	        	cells[i]->AddCellProperty(p_property1);
+	        } else
+	        {
+		        p_property2 -> SetCellTypeLabel(1u);
+		        cells[i]->AddCellProperty(p_property2);
+	        }
+	        */
 
 			cells.push_back(p_cell);
 		}
@@ -357,16 +402,34 @@ public:
 		simulator.SetEndTime(6.0);
 		simulator.Solve();
 
-		//PRINT_VARIABLE(simulator.rGetCellPopulation().GetNumRealCells());
-		 for (typename AbstractCellPopulation<2>::Iterator cell_iter = population.Begin();
-		         cell_iter != population.End();
+		for (typename AbstractCellPopulation<2>::Iterator cell_iter = simulator.rGetCellPopulation().Begin();
+		         cell_iter != simulator.rGetCellPopulation().End();
 		         ++cell_iter)
 		    {
-			 PRINT_VARIABLE(p_property -> rGetCellTypeLabel());
-			 TS_ASSERT_EQUALS(p_property -> rGetCellTypeLabel(), 0u);
-			}
+		        // Get this cell's type six machine property data
+				CellPropertyCollection collection = cell_iter->rGetCellPropertyCollection().template GetProperties<TypeSixMachineProperty>();
+		        if (collection.GetSize() != 1)
+		        {
+		            EXCEPTION("TypeSixMachineModifier cannot be used unless each cell has a TypeSixMachineProperty");
+		        }
+		        	boost::shared_ptr<TypeSixMachineProperty> p_property_test = boost::static_pointer_cast<TypeSixMachineProperty>(collection.GetProperty());
+		        	unsigned& r_capsule_property = p_property_test->rGetCellTypeLabel();
+		        	if (cell_iter -> GetCellId() == 0)
+		        	{
+		        		TS_ASSERT_EQUALS(r_capsule_property, p_property1 -> rGetCellTypeLabel());
+		        		PRINT_VARIABLE(r_capsule_property);
+		        		PRINT_VARIABLE(p_property1 -> rGetCellTypeLabel());
+		        	} else
+		        	{
+		        		TS_ASSERT_EQUALS(r_capsule_property, p_property2 -> rGetCellTypeLabel());
+		        		PRINT_VARIABLE(r_capsule_property);
+		        		PRINT_VARIABLE(p_property2 -> rGetCellTypeLabel());
+		        	}
+
+
+		    }
 	}
-	void NoTestCellLabelsToColourNotAttackerDivision()
+	void TestCellLabelsToColourNotAttackerDivision()
 	{
 		EXIT_IF_PARALLEL;
 		// Create some capsules
@@ -398,9 +461,8 @@ public:
 		std::vector<CellPtr> cells;
 		MAKE_PTR(WildTypeCellMutationState, p_state);
 		MAKE_PTR(TransitCellProliferativeType, p_type);
-		MAKE_PTR(TypeSixMachineProperty, p_property);
-		// 0 is Attacker and 1 is not attacker
-		p_property -> SetCellTypeLabel(1);
+		MAKE_PTR(TypeSixMachineProperty, p_property1);
+		MAKE_PTR(TypeSixMachineProperty, p_property2);
 
 		for (unsigned i=0; i<mesh.GetNumNodes(); i++)
 		{
@@ -425,10 +487,18 @@ public:
 
 			MAKE_PTR(TypeSixMachineProperty, p_property);
 			p_property->rGetMachineData().emplace_back(std::pair<unsigned, std::vector<double>>(4, machine_coordinates));
-			p_property -> SetCellTypeLabel(0);
 			p_cell->AddCellProperty(p_property);
-
 			cells.push_back(p_cell);
+			if (i % 2 == 0 )
+	        {
+	        	p_property1 -> SetCellTypeLabel(0u);
+	        	p_cell->AddCellProperty(p_property1);
+	        } else
+	        {
+		        p_property2 -> SetCellTypeLabel(1u);
+		        p_cell->AddCellProperty(p_property2);
+	        }
+
 		}
 
 		// Create cell population
@@ -459,20 +529,35 @@ public:
 		auto p_capsule_force = boost::make_shared<CapsuleForce<2>>();
 		simulator.AddForce(p_capsule_force);
 
-
-
 		/* We then set an end time and run the simulation */
-		simulator.SetEndTime(6.0);
+		simulator.SetEndTime(1.0);
 		simulator.Solve();
-
-		//PRINT_VARIABLE(simulator.rGetCellPopulation().GetNumRealCells());
-		 for (typename AbstractCellPopulation<2>::Iterator cell_iter = population.Begin();
-		         cell_iter != population.End();
+		for (typename AbstractCellPopulation<2>::Iterator cell_iter = simulator.rGetCellPopulation().Begin();
+		         cell_iter != simulator.rGetCellPopulation().End();
 		         ++cell_iter)
 		    {
-			 PRINT_VARIABLE(p_property -> rGetCellTypeLabel());
-			 TS_ASSERT_EQUALS(p_property -> rGetCellTypeLabel(), 1u);
-			}
+		        // Get this cell's type six machine property data
+				CellPropertyCollection collection = cell_iter->rGetCellPropertyCollection().template GetProperties<TypeSixMachineProperty>();
+		        if (collection.GetSize() != 1)
+		        {
+		            EXCEPTION("TypeSixMachineModifier cannot be used unless each cell has a TypeSixMachineProperty");
+		        }
+		        	boost::shared_ptr<TypeSixMachineProperty> p_property_test = boost::static_pointer_cast<TypeSixMachineProperty>(collection.GetProperty());
+		        	unsigned& r_capsule_property = p_property_test->rGetCellTypeLabel();
+		        	if (cell_iter -> GetCellId() % 2 == 0 )
+		        	{
+		        		TS_ASSERT_EQUALS(r_capsule_property, p_property1 -> rGetCellTypeLabel());
+		        		PRINT_VARIABLE(r_capsule_property);
+		        		PRINT_VARIABLE(p_property1 -> rGetCellTypeLabel());
+		        	} else
+		        	{
+		        		TS_ASSERT_EQUALS(r_capsule_property, p_property2 -> rGetCellTypeLabel());
+		        		PRINT_VARIABLE(r_capsule_property);
+		        		PRINT_VARIABLE(p_property2 -> rGetCellTypeLabel());
+		        	}
+
+
+		    }
 	}
 	void NoTestCellLabelsToColourAttackerAndNoTAttacker()
 	{
