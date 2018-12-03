@@ -48,12 +48,12 @@ CapsuleTypeLabelWriter<ELEMENT_DIM, SPACE_DIM>::CapsuleTypeLabelWriter()
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 double CapsuleTypeLabelWriter<ELEMENT_DIM, SPACE_DIM>::GetCellDataForVtkOutput(CellPtr pCell, AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation)
 {
-    double label = 0.0;
+    unsigned label = 0;
     if (pCell->HasCellProperty<TypeSixMachineProperty>())
     {
         CellPropertyCollection collection = pCell->rGetCellPropertyCollection().GetProperties<TypeSixMachineProperty>();
         boost::shared_ptr<TypeSixMachineProperty> p_label = boost::static_pointer_cast<TypeSixMachineProperty>(collection.GetProperty());
-        label = p_label->rGetCellTypeLabel();
+        label = p_label->GetCellTypeLabel();
     }
     return label;
 }
@@ -66,7 +66,7 @@ void CapsuleTypeLabelWriter<ELEMENT_DIM, SPACE_DIM>::VisitCell(CellPtr pCell, Ab
     {
         CellPropertyCollection collection = pCell->rGetCellPropertyCollection().GetProperties<TypeSixMachineProperty>();
         boost::shared_ptr<TypeSixMachineProperty> p_label = boost::static_pointer_cast<TypeSixMachineProperty>(collection.GetProperty());
-        label = p_label->rGetCellTypeLabel();
+        label = p_label->GetCellTypeLabel();
     }
 
     *this->mpOutStream << " " << label;
