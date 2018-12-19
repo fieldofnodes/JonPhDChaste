@@ -52,7 +52,7 @@
 #include "SquareBoundaryCondition.hpp"
 #include "CapsuleBasedDivisionRule.hpp"
 #include "TypeSixMachineModifier.hpp"
-#include "NodeBasedCellPopulationWithCapsules.hpp"
+#include "NodeBasedCellPopulationCapsules.hpp"
 #include "TypeSixMachineProperty.hpp"
 #include "TypeSixMachineCellKiller.hpp"
 #include "TypeSixMachineCellLabelledKiller.hpp"
@@ -131,7 +131,7 @@ public:
 
 
 		// Create cell population
-		NodeBasedCellPopulationWithCapsules<2> population(mesh, cells);
+		NodeBasedCellPopulationCapsules<2> population(mesh, cells);
 
 		population.AddCellWriter<CellIdWriter>();
 		population.AddCellWriter<CapsuleOrientationWriter>();

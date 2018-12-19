@@ -51,13 +51,9 @@
 #include "CapsuleTypeLabelWriter.hpp"
 #include "SquareBoundaryCondition.hpp"
 #include "CapsuleBasedDivisionRule.hpp"
-#include "TypeSixMachineModifier.hpp"
-#include "NodeBasedCellPopulationWithCapsules.hpp"
-#include "TypeSixMachineProperty.hpp"
-#include "TypeSixMachineCellKiller.hpp"
-#include "TypeSixMachineCellLabelledKiller.hpp"
-#include "MachineStateCountWriter.hpp"
 
+#include "NodeBasedCellPopulationCapsules.hpp"
+#include "TypeSixMachineProperty.hpp"
 
 
 // Should usually be called last.
@@ -91,7 +87,7 @@ public:
 		// Create some capsules
 		std::vector<Node<2>*> nodes;
 		nodes.push_back(new Node<2>(0u, Create_c_vector(0.0, 0.0)));
-		nodes.push_back(new Node<2>(1u, Create_c_vector(1.5,1.5)));
+		nodes.push_back(new Node<2>(1u, Create_c_vector(2.5,1.5)));
 
 
 		/*
@@ -140,35 +136,12 @@ public:
 			}
 
 			mesh.GetNode(i)->rGetNodeAttributes()[NA_LENGTH] = 2.0 +3.0*p_cell->GetBirthTime()/p_model->GetCellCycleDuration(); ;
-
-
-			double vertical_coordinate = 0.25*(mesh.GetNode(i)->rGetNodeAttributes()[NA_LENGTH]);
-			double azimuthal_coordinate = M_PI ;
-
-
-			std::vector<double> machine_coordinates;
-			machine_coordinates.push_back(vertical_coordinate);
-			machine_coordinates.push_back(azimuthal_coordinate);
-
-
-
-
-			//boost::shared_ptr<TypeSixMachineProperty> p_property;
-
-
-			// if the node number is even then the label is 0u -- meaning attacker, if the node number is off
-			// then the label is 1u -- meaning not attacker
-			PRINT_VECTOR(mesh.GetAllNodeIndices());
 			if (p_cell -> GetCellId() == 0)
 				{
-
-					p_property1->rGetMachineData().emplace_back(std::pair<unsigned, std::vector<double>>(4, machine_coordinates));
 					p_property1->SetCellTypeLabel(0u);
 					p_cell->AddCellProperty(p_property1);
 				} else
 				{
-
-					p_property2->rGetMachineData().emplace_back(std::pair<unsigned, std::vector<double>>(4, machine_coordinates));
 					p_property2->SetCellTypeLabel(1u);
 					p_cell->AddCellProperty(p_property2);
 				}
@@ -181,7 +154,7 @@ public:
 
 
 		// Create cell population
-		NodeBasedCellPopulationWithCapsules<2> population(mesh, cells);
+		NodeBasedCellPopulationCapsules<2> population(mesh, cells);
 		population.AddCellWriter<CellIdWriter>();
 		population.AddCellWriter<CapsuleOrientationWriter>();
 		population.AddCellWriter<CapsuleScalingWriter>();

@@ -52,7 +52,7 @@
 #include "SquareBoundaryCondition.hpp"
 #include "CapsuleBasedDivisionRule.hpp"
 #include "TypeSixMachineModifier.hpp"
-#include "NodeBasedCellPopulationWithCapsules.hpp"
+#include "NodeBasedCellPopulationCapsules.hpp"
 #include "TypeSixMachineProperty.hpp"
 #include "TypeSixMachineCellKiller.hpp"
 #include "TypeSixMachineCellLabelledKiller.hpp"
@@ -159,7 +159,7 @@ public:
 
 
 		// Create cell population
-		NodeBasedCellPopulationWithCapsules<2> population(mesh, cells);
+		NodeBasedCellPopulationCapsules<2> population(mesh, cells);
 
 		population.AddCellWriter<CellIdWriter>();
 		population.AddCellWriter<CapsuleOrientationWriter>();
@@ -261,7 +261,7 @@ public:
 
 
 		// Create cell population
-		NodeBasedCellPopulationWithCapsules<2> population(mesh, cells);
+		NodeBasedCellPopulationCapsules<2> population(mesh, cells);
 
 		population.AddCellWriter<CellIdWriter>();
 		population.AddCellWriter<CapsuleOrientationWriter>();
@@ -372,7 +372,7 @@ public:
 
 
 		// Create cell population
-		NodeBasedCellPopulationWithCapsules<2> population(mesh, cells);
+		NodeBasedCellPopulationCapsules<2> population(mesh, cells);
 
 		population.AddCellWriter<CellIdWriter>();
 		population.AddCellWriter<CapsuleOrientationWriter>();
@@ -533,7 +533,7 @@ public:
 
 
 		// Create cell population
-		NodeBasedCellPopulationWithCapsules<2> population(mesh, cells);
+		NodeBasedCellPopulationCapsules<2> population(mesh, cells);
 
 		population.AddCellWriter<CellIdWriter>();
 		population.AddCellWriter<CapsuleOrientationWriter>();
@@ -609,7 +609,7 @@ public:
 		// Create some capsules
 		std::vector<Node<2>*> nodes;
 		nodes.push_back(new Node<2>(0u, Create_c_vector(0.0, 0.0)));
-		nodes.push_back(new Node<2>(1u, Create_c_vector(1.5,1.5)));
+		nodes.push_back(new Node<2>(1u, Create_c_vector(4.0,0.0)));
 
 
 		/*
@@ -619,12 +619,12 @@ public:
 
 		NodesOnlyMesh<2> mesh;
 		mesh.ConstructNodesWithoutMesh(nodes, 100.0);
-		c_vector<double, 4> domain_size;
-		domain_size[0] = -1000.0;
-		domain_size[1] = 1000.0;
-		domain_size[2] = -1000.0;
-		domain_size[3] = 1000.0;
-		mesh.SetInitialBoxCollection(domain_size, 10.0);
+		//c_vector<double, 4> domain_size;
+		//domain_size[0] = -1000.0;
+		//domain_size[1] = 1000.0;
+		//domain_size[2] = -1000.0;
+		//domain_size[3] = 1000.0;
+		//mesh.SetInitialBoxCollection(domain_size, 10.0);
 
 
 		mesh.GetNode(0u)->AddNodeAttribute(0.0);
@@ -635,7 +635,7 @@ public:
 
 		mesh.GetNode(1u)->AddNodeAttribute(0.0);
 		mesh.GetNode(1u)->rGetNodeAttributes().resize(NA_VEC_LENGTH);
-		mesh.GetNode(1u)->rGetNodeAttributes()[NA_THETA] = .25*M_PI;
+		mesh.GetNode(1u)->rGetNodeAttributes()[NA_THETA] = 0.0;
 		mesh.GetNode(1u)->rGetNodeAttributes()[NA_LENGTH] = 2.0;
 		mesh.GetNode(1u)->rGetNodeAttributes()[NA_RADIUS] = 0.5;
 
@@ -666,10 +666,10 @@ public:
 
 			if (i % 2 == 0)
 			{
-				p_cell->SetBirthTime(-0.9);
+				p_cell->SetBirthTime(-0.1);
 			} else
 			{
-				p_cell->SetBirthTime(-0.9);
+				p_cell->SetBirthTime(-0.1);
 			}
 
 			mesh.GetNode(i)->rGetNodeAttributes()[NA_LENGTH] = 2.0 +3.0*p_cell->GetBirthTime()/p_model->GetCellCycleDuration(); ;
@@ -683,9 +683,6 @@ public:
 			machine_coordinates.push_back(vertical_coordinate);
 			machine_coordinates.push_back(azimuthal_coordinate);
 
-			double rand_angle = 2*M_PI*RandomNumberGenerator::Instance()->ranf()-M_PI;
-			std::vector<double> machine_angles;
-			machine_angles.push_back(rand_angle);
 
 
 			if (p_cell -> GetCellId() % 2 == 0)
@@ -709,7 +706,7 @@ public:
 
 
 		// Create cell population
-		NodeBasedCellPopulationWithCapsules<2> population(mesh, cells);
+		NodeBasedCellPopulationCapsules<2> population(mesh, cells);
 
 		population.AddCellWriter<CellIdWriter>();
 		population.AddCellWriter<CapsuleOrientationWriter>();
@@ -722,7 +719,7 @@ public:
 
 		// Create simulation
 		OffLatticeSimulation<2> simulator(population);
-		simulator.SetOutputDirectory("TestCellLabelsToColourNotAttackerMachineDivision");
+		simulator.SetOutputDirectory("05_TestCellLabelsToColourNotAttackerMachineDivision");
 		simulator.SetDt(1.0/1200.0);
 		simulator.SetSamplingTimestepMultiple(10u);
 
@@ -740,12 +737,13 @@ public:
 		simulator.AddForce(p_capsule_force);
 
 		MAKE_PTR(TypeSixMachineModifier<2>, p_modifier);
-		p_modifier->SetOutputDirectory("TestCellLabelsToColourNotAttackerMachineDivision");
+		p_modifier->SetOutputDirectory("05_TestCellLabelsToColourNotAttackerMachineDivision");
 		p_modifier->SetMachineParametersFromGercEtAl();
 		simulator.AddSimulationModifier(p_modifier);
 
 		/* We then set an end time and run the simulation */
-		simulator.SetEndTime(3.0);
+		simulator.SetEndTime(2.0);
+		MARK;
 		simulator.Solve();
 
 		TS_ASSERT_EQUALS(simulator.rGetCellPopulation().GetNumRealCells(),3u);
@@ -857,7 +855,7 @@ public:
 		}
 
 		// Create cell population
-		NodeBasedCellPopulationWithCapsules<2> population(mesh, cells);
+		NodeBasedCellPopulationCapsules<2> population(mesh, cells);
 
 		population.AddCellWriter<CellIdWriter>();
 		population.AddCellWriter<CapsuleOrientationWriter>();
@@ -987,7 +985,7 @@ public:
 		}
 
 		// Create cell population
-		NodeBasedCellPopulationWithCapsules<2> population(mesh, cells);
+		NodeBasedCellPopulationCapsules<2> population(mesh, cells);
 
 		population.AddCellWriter<CellIdWriter>();
 		population.AddCellWriter<CapsuleOrientationWriter>();
@@ -1106,7 +1104,7 @@ public:
 
 
 		// Create cell population
-		NodeBasedCellPopulationWithCapsules<2> population(mesh, cells);
+		NodeBasedCellPopulationCapsules<2> population(mesh, cells);
 
 		population.AddCellWriter<CellIdWriter>();
 		population.AddCellWriter<CapsuleOrientationWriter>();
@@ -1222,7 +1220,7 @@ public:
 		}
 
 		// Create cell population
-		NodeBasedCellPopulationWithCapsules<2> population(mesh, cells);
+		NodeBasedCellPopulationCapsules<2> population(mesh, cells);
 
 		population.AddCellWriter<CellIdWriter>();
 		population.AddCellWriter<CapsuleOrientationWriter>();
